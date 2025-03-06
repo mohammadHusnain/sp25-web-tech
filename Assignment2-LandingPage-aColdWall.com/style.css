@@ -1,0 +1,49 @@
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #000;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.nav-first {
+    height: 22px;
+    width: 100%;
+    background-color: blue;
+    display: flex; 
+    justify-content: space-between; 
+}
+
+.nav-first>a{
+    text-decoration: none;
+    display: flex;  
+}
+
+.nav-first>a>p {
+    font-size: 12px;
+    color: #fff;
+    margin: 0;  
+    padding: 4px;
+    font-weight: 500;
+}
+
+.nav-second{
+    height: 100px;
+    width: 100%;
+    background-color: #777677;
+    display: grid;
+}
+
+.nav-second a {
+    font-size: 12px;
+    color: #fff;
+    text-decoration: none; 
+    font-weight: 600;
+}
+
+.nav-second a:hover {
+    color: blue;
+}
+
+
