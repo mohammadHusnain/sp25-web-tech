@@ -1,49 +1,142 @@
 body {
-    font-family: 'Helvetica Neue', sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #000;
-    background-color: #fff;
-    box-sizing: border-box;
+  font-family: "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 .nav-first {
-    height: 22px;
-    width: 100%;
-    background-color: blue;
-    display: flex; 
-    justify-content: space-between; 
+  height: 22px;
+  width: 100%;
+  background-color: blue;
+  display: flex;
+  justify-content: space-between;
 }
 
-.nav-first>a{
-    text-decoration: none;
-    display: flex;  
+.nav-first > a {
+  text-decoration: none;
+  display: flex;
 }
 
-.nav-first>a>p {
-    font-size: 12px;
-    color: #fff;
-    margin: 0;  
-    padding: 4px;
-    font-weight: 500;
+.nav-first > a > p {
+  font-size: 12px;
+  color: #fff;
+  margin: 0;
+  padding: 4px;
+  font-weight: 500;
 }
 
-.nav-second{
-    height: 100px;
-    width: 100%;
-    background-color: #777677;
-    display: grid;
+.nav-second {
+  height: 100px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+  position: sticky;
 }
 
-.nav-second a {
-    font-size: 12px;
-    color: #fff;
-    text-decoration: none; 
-    font-weight: 600;
+.nav-second > .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5px;
+}
+
+.nav-second .grid a {
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .nav-second a:hover {
-    color: blue;
+  color: blue;
 }
 
+.nav-second .imgs {
+  display: flex;
+  gap: 0px;
+  margin-right: -50px;
+}
 
+.nav-second .grid:last-child {
+  margin-left: 50px;
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  gap: 0px;
+  background-color: #bcbcbc;
+}
+
+.hero-container {
+  display: flex;
+  flex: 1; /* Take up remaining space */
+}
+
+.hero-img-1,
+.hero-img-2 {
+  flex: 1;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-img-1 img,
+.hero-img-2 img {
+  width: 99%;
+  height: 100%;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+.hero-heading {
+  background-color: #bcbcbc;
+  padding: 2px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.hero-heading h1 {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 500;
+  color: #000; /* Set text color */
+}
+
+.shopbutton {
+  margin-top: 10px; /* Add space between heading and button */
+}
+
+.shopbutton button {
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
+  border: none;
+  padding: 8px 20px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 2px;
+  height: 35px;
+  width: 130px;
+}
+
+.numbers{
+  display: flex;
+  gap: 100px;
+  font-size: 9px;
+  font-weight: 700;
+}
