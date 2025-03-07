@@ -54,7 +54,7 @@ body {
   font-size: 12px;
   color: #fff;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .nav-second a:hover {
@@ -99,7 +99,6 @@ body {
   width: 99%;
   height: 100%;
   object-fit: cover;
-  margin-top: 10px;
 }
 
 .hero-heading {
@@ -178,6 +177,57 @@ body {
   justify-content: end;
 align-items: end;
 margin-right: 20px;
+}
+
+.footer {
+  height: 100px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+  position: sticky;
+}
+
+.footer>.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5px;
+}
+
+.footer> .grid a,p {
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer> .grid p{
+  margin-top: 0px;
+}
+
+.footer>.grid>a:hover {
+  color: blue;
+}
+
+.footercopyright {
+  height: 70px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0px;
+  position: sticky;
+}
+
+.footercopyright>div{
+    font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  
 }
 
 
