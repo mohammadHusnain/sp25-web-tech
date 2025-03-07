@@ -140,3 +140,49 @@ body {
   font-size: 9px;
   font-weight: 700;
 }
+
+.landingpage-images{
+  display: flex;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landingpage-images>.image-item>a>img{
+    width: 268px;
+  object-fit: cover;
+  gap: 5px;
+  margin: 1px;
+   margin-top: 5px;
+}
+
+.landingpage-images > .image-item > .description {
+  font-size: 0.75rem;
+  color: #000;
+    font-weight: 600;
+
+}
+
+.landingpage-images > .image-item > .price {
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: bold;
+    margin-top: 0.5px;
+    margin-bottom: 20px;
+
+}
+
+.scrollarrows{
+  margin-top: 20px;
+  display: flex;
+  gap: 7px;
+  justify-content: end;
+align-items: end;
+margin-right: 20px;
+}
+
+
+
+
+
+
+
