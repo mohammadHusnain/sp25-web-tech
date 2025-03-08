@@ -12,12 +12,16 @@ body {
   box-sizing: inherit;
 }
 
+.navs{
+position: relative;}
+
 .nav-first {
   height: 22px;
   width: 100%;
   background-color: blue;
   display: flex;
   justify-content: space-between;
+  position: sticky;
 }
 
 .nav-first > a {
