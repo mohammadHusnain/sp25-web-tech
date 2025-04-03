@@ -9,7 +9,7 @@ $(function () {
         // Clear previous results
         $("#resultContainer").empty();
 
-        // Fetch age for each name
+        // Fetch age for each Name
         names.forEach(name => {
             $.ajax({
                 url: `https://api.agify.io?name=${name}`,
