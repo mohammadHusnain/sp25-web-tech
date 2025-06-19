@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/admin/products">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/admin/products">Products</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/products/add">Add Product</a></li>
+                <li class="nav-item"><a class="nav-link" href="/admin/orders">Orders</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="/profile">Back to Site</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <h1 class="mb-4 text-primary">All Orders</h1>
+    <table class="table table-bordered bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(function(order) { %>
+                <tr>
+                    <td>
+                        <%= order.name || order.userEmail %>
+                    </td>
+                    <td>
+                        <ul class="mb-0">
+                            <% order.items.forEach(function(item) { %>
+                                <li>
+                                    <%= item %>
+                                </li>
+                                <% }) %>
+                        </ul>
+                    </td>
+                    <td>$<%= order.total || 'N/A' %>
+                    </td>
+                    <td>
+                        <%= order.createdAt ? order.createdAt.toLocaleString() : '' %>
+                    </td>
+                    <td>
+                        <%= order.status || 'Pending' %>
+                    </td>
+                    <td>
+                        <form action="/admin/orders/status/<%= order._id %>" method="POST" class="d-inline">
+                            <select name="status" class="form-select form-select-sm d-inline w-auto"
+                                style="width: 120px; display: inline-block;">
+                                <option value="Pending" <%=order.status==='Pending' ? 'selected' : '' %>>Pending
+                                </option>
+                                <option value="Completed" <%=order.status==='Completed' ? 'selected' : '' %>>Completed
+                                </option>
+                                <option value="Cancelled" <%=order.status==='Cancelled' ? 'selected' : '' %>>Cancelled
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary ms-1">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+</div>

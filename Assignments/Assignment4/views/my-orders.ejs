@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+    <h2>My Orders</h2>
+    <ul>
+        <% if (orders.length===0) { %>
+            <li>No orders found.</li>
+            <% } else { %>
+                <% orders.forEach(function(order) { %>
+                    <li>
+                        <strong>Order ID:</strong>
+                        <%= order._id %><br>
+                            <strong>Items:</strong>
+                            <%= order.items.join(', ') %><br>
+        <strong>Date:</strong> <%= order.createdAt.toLocaleString() %>
+      </li>
+    <% }) %>
+  <% } %>
+</ul>
+<a href="/">Back to Home</a>
+<%- include(' partials/footer') %>

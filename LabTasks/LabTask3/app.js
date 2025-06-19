@@ -1,103 +1,139 @@
-require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const expressLayouts = require('express-ejs-layouts');
-const User = require('./models/User');
-const Order = require('./models/Order');
-const { ensureAuthenticated } = require('./middleware/auth');
-const bcrypt = require('bcrypt');
 
 const app = express();
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Temporary in-memory user storage
+const users = [];
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(expressLayouts);
+// MongoDB connection (local)
+mongoose.connect('mongodb://127.0.0.1:27017/labtask3db', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log('MongoDB connected'));
+
+// User Schema
+const userSchema = new mongoose.Schema({
+    name: String,
+    email: { type: String, unique: true },
+    password: String
+});
+const User = mongoose.model('User', userSchema);
+
+// Order Schema
+const orderSchema = new mongoose.Schema({
+    userEmail: String,
+    items: [String],
+    createdAt: { type: Date, default: Date.now }
+});
+const Order = mongoose.model('Order', orderSchema);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('layout', 'layout');
 
-// Session setup
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'labtask3secret',
+app.use(expressLayouts); // enable layout middleware
+require('ejs');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+
+// Optional: specify default layout
+app.set('layout', 'layout'); // uses views/layout.ejs as the base
+
+app.use(session({
+    secret: 'labtask3secret',
     resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 },
-  })
-);
+    saveUninitialized: false
+}));
 
-// Home page
-app.get('/', (req, res) => {
-  res.render('index', { user: req.session.userId });
-});
-
-// Register
-app.get('/register', (req, res) => {
-  res.render('register');
-});
-
-app.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res.send('<h3>User already exists. <a href="/login">Login here</a>.</h3>');
+// Middleware to protect routes
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        return next();
     }
-    const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashed });
-    await user.save();
-    res.send('<h3>Registration successful! <a href="/login">Login here</a>.</h3>');
-  } catch (err) {
-    res.send('Error registering user.');
-  }
-});
-
-// Login
-app.get('/login', (req, res) => {
-  res.render('login');
-});
-
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.send('<h3>Invalid email or password.</h3>');
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.send('<h3>Invalid email or password.</h3>');
-    req.session.userId = user._id;
-    req.session.userEmail = user.email;
-    res.redirect('/');
-  } catch (err) {
-    res.send('Error logging in.');
-  }
-});
-
-// Logout
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
     res.redirect('/login');
-  });
+}
+
+app.get('/', (req, res) => {
+    res.render('index'); // will use layout.ejs automatically
+});
+
+app.get('/form', (req, res) => {
+    res.render('formValidation'); // will also use layout
+});
+
+// GET: Register Form
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// POST: Handle Registration
+app.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.send('<h3>User already registered. Try logging in.</h3>');
+        }
+        await User.create({ name, email, password });
+        res.send(`<h3>Registration successful! <a href="/login">Login here</a>.</h3>`);
+    } catch (err) {
+        res.send('<h3>Error registering user.</h3>');
+    }
+});
+
+// GET: Login Form
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+// POST: Handle Login
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
+    if (!user) {
+        return res.send('<h3>Invalid email or password. Please try again.</h3>');
+    }
+    req.session.user = { email: user.email, name: user.name };
+    res.redirect('/profile');
+});
+
+// GET: Profile Page
+app.get('/profile', isAuthenticated, (req, res) => {
+    res.render('profile', { user: req.session.user });
+});
+
+// GET: Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/login');
+    });
 });
 
 // Protected Orders Route
-app.get('/my-orders', ensureAuthenticated, async (req, res) => {
-  try {
-    const orders = await Order.find({ user: req.session.userId });
-    res.render('orders', { orders });
-  } catch (err) {
-    res.send('Error fetching orders.');
-  }
+app.get('/my-orders', isAuthenticated, async (req, res) => {
+    const userEmail = req.session.user.email;
+    const orders = await Order.find({ userEmail });
+    res.render('my-orders', { orders });
+});
+
+app.post('/submit', (req, res) => {
+    console.log(req.body);
+    res.send('Form submitted!');
+});
+
+// GET: Products Page
+app.get('/products', isAuthenticated, (req, res) => {
+    res.render('products');
+});
+
+// GET: About Page
+app.get('/about', isAuthenticated, (req, res) => {
+    res.render('about');
 });
 
 app.listen(4000, () => {
-  console.log('LabTask3 app running on http://localhost:4000');
-}); 
+    console.log('Server is running on port 4000');
+});

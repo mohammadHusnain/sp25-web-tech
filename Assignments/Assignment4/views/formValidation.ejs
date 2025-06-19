@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56d4;
+            --error-color: #f72585;
+            --success-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 800px;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-group .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .form-group .input-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-group.invalid input, 
+        .form-group.invalid select, 
+        .form-group.invalid textarea {
+            border-color: var(--error-color);
+        }
+
+        .form-group.invalid .error-message {
+            display: block;
+        }
+
+        .form-group.valid input, 
+        .form-group.valid select, 
+        .form-group.valid textarea {
+            border-color: var(--success-color);
+        }
+
+        .form-group.valid .success-message {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            margin: 15px 0 10px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .terms-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .terms-container input {
+            margin-right: 8px;
+        }
+
+        .terms-container label {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .terms-container a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .terms-container a:hover {
+            text-decoration: underline;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <form id="checkoutForm" novalidate>
+            <!-- Personal Information Section -->
+            <h3 class="section-title">Personal Information</h3>
+            
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="fullName">Full Name <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+                <span class="error-message">Please enter your full name</span>
+                <span class="success-message">Looks good!</span>
+            </div>
+
+            <div class="form-row">
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <span class="error-message">Please enter a valid email</span>
+                    <span class="success-message">Valid email</span>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="form-group">
+                    <label for="phone">Phone <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" name="phone" placeholder="1234567890" required>
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    <span class="error-message">10-digit number required</span>
+                    <span class="success-message">Valid phone</span>
+                </div>
+            </div>
+
+            <!-- Shipping Information Section -->
+            <h3 class="section-title">Shipping Information</h3>
+            
+            <!-- Address Field -->
+            <div class="form-group">
+                <label for="address">Address <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input type="text" id="address" name="address" placeholder="123 Main St" required>
+                    <i class="fas fa-map-marker-alt input-icon"></i>
+                </div>
+                <span class="error-message">Address required</span>
+                <span class="success-message">Valid address</span>
+            </div>
+
+            <div class="form-row">
+                <!-- City -->
+                <div class="form-group">
+                    <label for="city">City <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="city" name="city" placeholder="New York" required>
+                        <i class="fas fa-city input-icon"></i>
+                    </div>
+                    <span class="error-message">City required</span>
+                    <span class="success-message">Valid city</span>
+                </div>
+
+                <!-- State -->
+                <div class="form-group">
+                    <label for="state">State <span class="required">*</span></label>
+                    <select id="state" name="state" required>
+                        <option value="" disabled selected>Select state</option>
+                        <option value="CA">California</option>
+                        <option value="NY">New York</option>
+                        <option value="TX">Texas</option>
+                    </select>
+                    <span class="error-message">State required</span>
+                    <span class="success-message">State selected</span>
+                </div>
+
+                <!-- Zip Code -->
+                <div class="form-group">
+                    <label for="zipCode">ZIP Code <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="zipCode" name="zipCode" placeholder="10001" required>
+                        <i class="fas fa-mail-bulk input-icon"></i>
+                    </div>
+                    <span class="error-message">Valid ZIP required</span>
+                    <span class="success-message">Valid ZIP</span>
+                </div>
+            </div>
+
+            <!-- Payment Information Section -->
+            <h3 class="section-title">Payment Information</h3>
+            
+            <!-- Card Number -->
+            <div class="form-group">
+                <label for="cardNumber">Card Number <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                    <i class="far fa-credit-card input-icon"></i>
+                </div>
+                <span class="error-message">Valid card required</span>
+                <span class="success-message">Card valid</span>
+            </div>
+
+            <div class="form-row">
+                <!-- Expiry Date -->
+                <div class="form-group">
+                    <label for="expiryDate">Expiry Date <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                        <i class="far fa-calendar-alt input-icon"></i>
+                    </div>
+                    <span class="error-message">MM/YY required</span>
+                    <span class="success-message">Date valid</span>
+                </div>
+
+                <!-- CVV -->
+                <div class="form-group">
+                    <label for="cvv">CVV <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input type="password" id="cvv" name="cvv" placeholder="123" required>
+                        <i class="fas fa-lock input-icon password-toggle" onclick="togglePassword('cvv')"></i>
+                    </div>
+                    <span class="error-message">3-4 digits required</span>
+                    <span class="success-message">CVV valid</span>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms and Conditions</a></label>
+            </div>
+            <span class="error-message" style="display: none; margin-top: -10px;">You must agree to the terms</span>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-lock" style="margin-right: 8px;"></i>
+                Complete Purchase
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('checkoutForm');
+        
+        // Form fields
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+        const stateInput = document.getElementById('state');
+        const zipCodeInput = document.getElementById('zipCode');
+        const cardNumberInput = document.getElementById('cardNumber');
+        const expiryDateInput = document.getElementById('expiryDate');
+        const cvvInput = document.getElementById('cvv');
+        const termsCheckbox = document.getElementById('terms');
+
+        // Real-time validation as user types
+        fullNameInput.addEventListener('input', () => validateField(fullNameInput, validateName));
+        emailInput.addEventListener('input', () => validateField(emailInput, validateEmail));
+        phoneInput.addEventListener('input', () => validateField(phoneInput, validatePhone));
+        addressInput.addEventListener('input', () => validateField(addressInput, validateNotEmpty));
+        cityInput.addEventListener('input', () => validateField(cityInput, validateNotEmpty));
+        stateInput.addEventListener('change', () => validateField(stateInput, validateNotEmpty));
+        zipCodeInput.addEventListener('input', () => validateField(zipCodeInput, validateZipCode));
+        cardNumberInput.addEventListener('input', () => {
+            formatCardNumber();
+            validateField(cardNumberInput, validateCardNumber);
+        });
+        expiryDateInput.addEventListener('input', () => {
+            formatExpiryDate();
+            validateField(expiryDateInput, validateExpiryDate);
+        });
+        cvvInput.addEventListener('input', () => validateField(cvvInput, validateCVV));
+        termsCheckbox.addEventListener('change', () => validateField(termsCheckbox, validateTerms));
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            
+            // Validate all fields
+            const isNameValid = validateField(fullNameInput, validateName);
+            const isEmailValid = validateField(emailInput, validateEmail);
+            const isPhoneValid = validateField(phoneInput, validatePhone);
+            const isAddressValid = validateField(addressInput, validateNotEmpty);
+            const isCityValid = validateField(cityInput, validateNotEmpty);
+            const isStateValid = validateField(stateInput, validateNotEmpty);
+            const isZipValid = validateField(zipCodeInput, validateZipCode);
+            const isCardValid = validateField(cardNumberInput, validateCardNumber);
+            const isExpiryValid = validateField(expiryDateInput, validateExpiryDate);
+            const isCVVValid = validateField(cvvInput, validateCVV);
+            const isTermsValid = validateField(termsCheckbox, validateTerms);
+
+            // If all fields are valid, submit the form
+            if (isNameValid && isEmailValid && isPhoneValid && isAddressValid && 
+                isCityValid && isStateValid && isZipValid && isCardValid && 
+                isExpiryValid && isCVVValid && isTermsValid) {
+                
+                // Show loading state
+                const submitBtn = form.querySelector('.submit-btn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Processing...';
+                submitBtn.disabled = true;
+
+                // Simulate form submission (replace with actual AJAX call)
+                setTimeout(() => {
+                    alert('Payment processed successfully! Thank you for your purchase.');
+                    form.reset();
+                    submitBtn.innerHTML = '<i class="fas fa-lock" style="margin-right: 8px;"></i> Complete Purchase';
+                    submitBtn.disabled = false;
+                    
+                    // Reset all validation states
+                    document.querySelectorAll('.form-group').forEach(group => {
+                        group.classList.remove('valid');
+                    });
+                }, 1500);
+            } else {
+                // Scroll to the first error
+                const firstError = document.querySelector('.form-group.invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Validation functions
+        function validateField(input, validationFn) {
+            const formGroup = input.closest('.form-group');
+            const isValid = validationFn(input);
+            
+            if (isValid) {
+                formGroup.classList.remove('invalid');
+                formGroup.classList.add('valid');
+                return true;
+            } else {
+                formGroup.classList.remove('valid');
+                formGroup.classList.add('invalid');
+                return false;
+            }
+        }
+
+        function validateName(input) {
+            return input.value.trim().length >= 3 && /^[a-zA-Z\s]+$/.test(input.value.trim());
+        }
+
+        function validateEmail(input) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(input.value.trim());
+        }
+
+        function validatePhone(input) {
+            return /^\d{10}$/.test(input.value.trim());
+        }
+
+        function validateNotEmpty(input) {
+            return input.value.trim() !== '';
+        }
+
+        function validateZipCode(input) {
+            return /^\d{5}(-\d{4})?$/.test(input.value.trim());
+        }
+
+        function validateCardNumber(input) {
+            // Simple validation - in real app use proper card validation library
+            const value = input.value.replace(/\s+/g, '');
+            return /^\d{13,16}$/.test(value);
+        }
+
+        function validateExpiryDate(input) {
+            const value = input.value.replace(/\//g, '');
+            if (!/^\d{4}$/.test(value)) return false;
+            
+            const month = parseInt(value.substring(0, 2));
+            const year = parseInt(value.substring(2, 4));
+            const currentYear = new Date().getFullYear() % 100;
+            const currentMonth = new Date().getMonth() + 1;
+            
+            if (month < 1 || month > 12) return false;
+            if (year < currentYear) return false;
+            if (year === currentYear && month < currentMonth) return false;
+            
+            return true;
+        }
+
+        function validateCVV(input) {
+            return /^\d{3,4}$/.test(input.value.trim());
+        }
+
+        function validateTerms(input) {
+            return input.checked;
+        }
+
+        // Formatting functions
+        function formatCardNumber() {
+            let value = cardNumberInput.value.replace(/\s+/g, '');
+            if (value.length > 16) value = value.substring(0, 16);
+            
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formatted += ' ';
+                formatted += value[i];
+            }
+            
+            cardNumberInput.value = formatted;
+        }
+
+        function formatExpiryDate() {
+            let value = expiryDateInput.value.replace(/\//g, '');
+            if (value.length > 4) value = value.substring(0, 4);
+            
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i === 2) formatted += '/';
+                formatted += value[i];
+            }
+            
+            expiryDateInput.value = formatted;
+        }
+
+        // Helper function to toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = field.nextElementSibling;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-lock');
+                icon.classList.add('fa-unlock');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-unlock');
+                icon.classList.add('fa-lock');
+            }
+        }
+
+        // Initialize any fields that might have values (for edit scenarios)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (cardNumberInput.value) formatCardNumber();
+            if (expiryDateInput.value) formatExpiryDate();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<div class="container py-5">
+    <h1 class="mb-4 text-center text-primary">Products</h1>
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="alert alert-danger text-center">
+            <%= error %>
+        </div>
+        <% } %>
+            <% if (typeof success !=='undefined' && success) { %>
+                <div class="alert alert-success text-center">
+                    <%= success %>
+                </div>
+                <% } %>
+                    <div class="row">
+                        <% products.forEach(function(product) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <img src="<%= product.image %>" class="card-img-top" alt="<%= product.title %>"
+                                        style="height: 220px; object-fit: cover;">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">
+                                            <%= product.title %>
+                                        </h5>
+                                        <p class="card-text">
+                                            <%= product.description %>
+                                        </p>
+                                        <div class="mt-auto">
+                                            <div class="mb-2 fw-bold">$<%= product.price %>
+                                            </div>
+                                            <form action="/cart/add/<%= product._id %>" method="POST">
+                                                <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+</div>
