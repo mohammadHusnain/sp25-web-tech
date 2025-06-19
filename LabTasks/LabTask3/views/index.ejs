@@ -1,0 +1,11 @@
+<section class="hero-section">
+  <div class="hero-heading">
+    <h1>Welcome to Lab Task 3: Authenticated Orders App</h1>
+    <% if (user) { %>
+      <p>You are logged in. <a href="/logout">Logout</a> | <a href="/my-orders">My Orders</a></p>
+    <% } else { %>
+      <p><a href="/login">Login</a> or <a href="/register">Register</a> to continue.</p>
+    <% } %>
+  </div>
+  <!-- You can add more content or images here -->
+</section> 
