@@ -1,0 +1,51 @@
+<!-- Header Start -->
+<header>
+    <!-- navbar section -->
+    <section class="navs">
+        <div class="nav-first">
+            <a href="">
+                <p>FIRST ARRIVALS NOW ONLINE</p>
+            </a>
+            <a href="">
+                <p>CLOSE</p>
+            </a>
+        </div>
+
+        <div class="nav-second" style="align-items: center;">
+            <div class="grid">
+                <a href="#">A-COLD-WALL*</a>
+            </div>
+            <div class="grid">
+                <a href="#">CATEGORIES</a>
+                <a href="/shop">SHOP ALL</a>
+            </div>
+            <div class="grid" style="flex-direction: row; gap: 30px; align-items: center;">
+                <a href="/">HOME</a>
+                <a href="/products">PRODUCTS</a>
+                <a href="/about">ABOUT</a>
+                <span>SEARCH</span>
+                <% if (typeof user !=='undefined' && user) { %>
+                    <a href="/profile">PROFILE</a>
+                    <a href="/logout">LOGOUT</a>
+                    <% if (user.isAdmin) { %>
+                        <a href="/admin/products">ADMIN PANEL</a>
+                        <% } %>
+                            <% } else { %>
+                                <a href="/login">LOGIN</a>
+                                <a href="/register">REGISTER</a>
+                                <% } %>
+                                    <a href="/cart" style="position: relative;">
+                                        CART
+                                        <% if (typeof cart !=='undefined' && cart.length> 0) { %>
+                                            <span class="badge bg-dark rounded-circle"
+                                                style="position: absolute; top: -8px; left: 40px; font-size: 0.7rem;">
+                                                <%= cart.length %>
+                                            </span>
+                                            <% } %>
+                                    </a>
+            </div>
+        </div>
+    </section>
+</header>
+<!-- Header End -->
+

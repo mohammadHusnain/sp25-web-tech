@@ -1,0 +1,238 @@
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.bb{
+    min-height: 100vh;
+}
+
+.navs {
+  position: relative;
+}
+
+.nav-first {
+  height: 22px;
+  width: 100%;
+  background-color: blue;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.nav-first > a {
+  text-decoration: none;
+  display: flex;
+}
+
+.nav-first > a > p {
+  font-size: 11.5px;
+  color: #fff;
+  margin: 0;
+  padding: 4px;
+  font-weight: 500;
+}
+
+.nav-second {
+  height: 100px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+  position: relative;
+  z-index: 999;
+  margin-top: 22px;
+}
+
+.nav-second > .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5px;
+}
+
+.nav-second .grid a {
+  font-size: 11.5px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-second a:hover {
+  color: blue;
+}
+
+.nav-second .imgs {
+  display: flex;
+  gap: 0px;
+  margin-right: -50px;
+}
+
+.nav-second .grid:last-child {
+  margin-left: 50px;
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  gap: 0px;
+  background-color: #bcbcbc;
+}
+
+.hero-container {
+  display: flex;
+  flex: 1; /* Take up remaining space */
+}
+
+.hero-img-1,
+.hero-img-2 {
+  flex: 1;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-img-1 img,
+.hero-img-2 img {
+  width: 99.5%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-heading {
+  background-color: #bcbcbc;
+  padding: 2px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.hero-heading h1 {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 500;
+  color: #000; /* Set text color */
+}
+
+.shopbutton {
+  margin-top: 10px; /* Add space between heading and button */
+}
+
+.shopbutton button {
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
+  border: none;
+  padding: 8px 20px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 2px;
+  height: 35px;
+  width: 130px;
+}
+
+.numbers {
+  display: flex;
+  gap: 100px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.landingpage-images {
+  display: flex;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landingpage-images > .image-item > a > img {
+  width: 268px;
+  object-fit: cover;
+  gap: 5px;
+  margin: 1px;
+  margin-top: 5px;
+}
+
+.landingpage-images > .image-item > .description {
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: 600;
+}
+
+.landingpage-images > .image-item > .price {
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: bold;
+  margin-top: 0.5px;
+  margin-bottom: 20px;
+}
+
+.scrollarrows {
+  margin-top: 20px;
+  display: flex;
+  gap: 7px;
+  justify-content: end;
+  align-items: end;
+  margin-right: 20px;
+}
+
+.footer {
+  height: 100px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 50px;
+  position: sticky;
+}
+
+.footer > .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5px;
+}
+
+.footer > .grid a,
+p {
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer > .grid p {
+  margin-top: 0px;
+}
+
+.footer > .grid > a:hover {
+  color: blue;
+}
+
+.footercopyright {
+  height: 70px;
+  width: 100%;
+  background-color: #777677;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0px;
+  position: sticky;
+}
+
+.footercopyright > div {
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
