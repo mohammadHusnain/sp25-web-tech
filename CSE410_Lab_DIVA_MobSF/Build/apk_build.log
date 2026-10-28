@@ -1,0 +1,61 @@
+== [1/7] aapt2 compile resources (app + support libraries 23.1.0)
+== [2/7] aapt2 link (manifest, resources.arsc, R.java)
+== [3/7] javac (Java sources + generated R)
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+== [4/7] d8 (dex app classes + libraries)
+Info: Stripped invalid locals information from 11 methods.
+Info in /tmp/claude-0/work/deps/x/appcompat-v7/classes.jar:android/support/v7/internal/view/SupportMenuInflater.class:
+Methods with invalid locals information:
+  void android.support.v7.internal.view.SupportMenuInflater.parseMenu(org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.view.Menu)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 6 with constraint OBJECT.
+Info in /tmp/claude-0/work/deps/x/appcompat-v7/classes.jar:android/support/v7/widget/ListPopupWindow.class:
+Methods with invalid locals information:
+  int android.support.v7.widget.ListPopupWindow.buildDropDown()
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 7 with constraint INT.
+Info in /tmp/claude-0/work/deps/x/appcompat-v7/classes.jar:android/support/v7/widget/SearchView.class:
+Methods with invalid locals information:
+  android.content.Intent android.support.v7.widget.SearchView.createIntentFromSuggestion(android.database.Cursor, int, java.lang.String)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 5 with constraint INT.
+Info in /tmp/claude-0/work/deps/x/appcompat-v7/classes.jar:android/support/v7/widget/Toolbar.class:
+Methods with invalid locals information:
+  void android.support.v7.widget.Toolbar.onLayout(boolean, int, int, int, int)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 20 with constraint INT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/app/FragmentActivity.class:
+Methods with invalid locals information:
+  java.lang.String android.support.v4.app.FragmentActivity.viewToString(android.view.View)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 4 with constraint OBJECT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/app/FragmentManagerImpl.class:
+Methods with invalid locals information:
+  boolean android.support.v4.app.FragmentManagerImpl.execPendingActions()
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 2 with constraint INT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/view/GestureDetectorCompat$GestureDetectorCompatImplBase.class:
+Methods with invalid locals information:
+  boolean android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase.onTouchEvent(android.view.MotionEvent)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 16 with constraint FLOAT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/view/PagerTitleStrip.class:
+Methods with invalid locals information:
+  void android.support.v4.view.PagerTitleStrip.updateTextPositions(int, float, boolean)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 37 with constraint INT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/view/ViewPager.class:
+Methods with invalid locals information:
+  void android.support.v4.view.ViewPager.populate(int)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 8 with constraint OBJECT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/widget/DrawerLayout.class:
+Methods with invalid locals information:
+  void android.support.v4.widget.DrawerLayout.setDrawerLockMode(int, int)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 4 with constraint OBJECT.
+Info in /tmp/claude-0/work/deps/x/support-v4/classes.jar:android/support/v4/widget/NestedScrollView.class:
+Methods with invalid locals information:
+  boolean android.support.v4.widget.NestedScrollView.onTouchEvent(android.view.MotionEvent)
+  Information in locals-table is invalid with respect to the stack map table. Local refers to non-present stack map type for register: 4 with constraint INT.
+Info: Some warnings are typically a sign of using an outdated Java toolchain. To fix, recompile the source with an updated toolchain.
+== [5/7] package classes.dex + jniLibs (libdivajni.so)
+== [6/7] zipalign
+== [7/7] apksigner (Android debug keystore)
+Signer #1 certificate DN: CN=Android Debug, O=Android, C=US
+Signer #1 certificate SHA-256 digest: 8c69cc1a8d626dc415fe31b4cd82bf40cc05b58f95312ef7ea52ffe316173f2f
+Signer #1 certificate SHA-1 digest: 3e1efe30cf27b28b0d0b41764f2f844753d9934f
+BUILD SUCCESSFUL -> /tmp/claude-0/work/out/app-debug.apk
+-rw-r--r-- 1 root root 1450452 Oct 28 17:57 /tmp/claude-0/work/out/app-debug.apk
+4adc2de8a86d958fce181a067588fa9891f67be58b87aaf0629750ee9fa28331  /tmp/claude-0/work/out/app-debug.apk

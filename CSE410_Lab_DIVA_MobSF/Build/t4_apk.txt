@@ -1,0 +1,21 @@
+$ aapt2 dump badging app-debug.apk
+package: name='jakhar.aseem.diva' versionCode='1' versionName='1.0' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'
+minSdkVersion:'15'
+targetSdkVersion:'23'
+uses-permission: name='android.permission.WRITE_EXTERNAL_STORAGE'
+uses-permission: name='android.permission.READ_EXTERNAL_STORAGE'
+uses-permission: name='android.permission.INTERNET'
+application-label:'Diva'
+launchable-activity: name='jakhar.aseem.diva.MainActivity'  label='Diva' icon=''
+native-code: 'arm64-v8a' 'armeabi-v7a' 'riscv64' 'x86' 'x86_64'
+$ unzip -l app-debug.apk | grep -E "dex|lib/|arsc|Manifest"
+     6004  1980-01-01 00:00   AndroidManifest.xml
+   234064  1980-01-01 00:00   resources.arsc
+  2176692  2026-10-28 17:57   classes.dex
+     3384  2026-10-28 17:57   lib/armeabi-v7a/libdivajni.so
+     4648  2026-10-28 17:57   lib/arm64-v8a/libdivajni.so
+     4816  2026-10-28 17:57   lib/riscv64/libdivajni.so
+     3588  2026-10-28 17:57   lib/x86/libdivajni.so
+     4616  2026-10-28 17:57   lib/x86_64/libdivajni.so
+$ sha256sum app-debug.apk
+4adc2de8a86d958fce181a067588fa9891f67be58b87aaf0629750ee9fa28331  out/app-debug.apk

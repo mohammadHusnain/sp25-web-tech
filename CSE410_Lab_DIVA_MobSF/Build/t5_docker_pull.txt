@@ -1,0 +1,10 @@
+$ docker --version
+Docker version 29.9.2, build a82e528
+$ docker pull opensecurity/mobile-security-framework-mobsf:latest
+1dc75c5bb3c0: Pull complete
+Digest: sha256:637cdb708179ba16fd802809a3ef3770826d0cda2687bc0c9ce7f3164798d301
+Status: Downloaded newer image for opensecurity/mobile-security-framework-mobsf:latest
+docker.io/opensecurity/mobile-security-framework-mobsf:latest
+$ docker images opensecurity/mobile-security-framework-mobsf
+IMAGE                                                 ID             DISK USAGE   CONTENT SIZE   EXTRA
+opensecurity/mobile-security-framework-mobsf:latest   637cdb708179       3.52GB          996MB   U    

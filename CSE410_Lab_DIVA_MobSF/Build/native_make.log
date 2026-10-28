@@ -1,0 +1,24 @@
+ndk-build
+make[1]: Entering directory '/src/app/src/main/jni'
+Android NDK: APP_PLATFORM not set. Defaulting to minimum supported version android-21.    
+Android NDK: WARNING: APP_PLATFORM android-21 is higher than android:minSdkVersion 1 in /src/app/src/main/AndroidManifest.xml. NDK binaries will *not* be compatible with devices older than android-21. See https://android.googlesource.com/platform/ndk/+/master/docs/user/common_problems.md for more information.    
+make[1]: Leaving directory '/src/app/src/main/jni'
+make[1]: Entering directory '/src/app/src/main/jni'
+[arm64-v8a] Compile        : divajni <= divajni.c
+[arm64-v8a] SharedLibrary  : libdivajni.so
+[arm64-v8a] Install        : libdivajni.so => libs/arm64-v8a/libdivajni.so
+[riscv64] Compile        : divajni <= divajni.c
+[riscv64] SharedLibrary  : libdivajni.so
+[riscv64] Install        : libdivajni.so => libs/riscv64/libdivajni.so
+[x86_64] Compile        : divajni <= divajni.c
+[x86_64] SharedLibrary  : libdivajni.so
+[x86_64] Install        : libdivajni.so => libs/x86_64/libdivajni.so
+[armeabi-v7a] Compile arm    : divajni <= divajni.c
+[armeabi-v7a] SharedLibrary  : libdivajni.so
+[armeabi-v7a] Install        : libdivajni.so => libs/armeabi-v7a/libdivajni.so
+[x86] Compile        : divajni <= divajni.c
+[x86] SharedLibrary  : libdivajni.so
+[x86] Install        : libdivajni.so => libs/x86/libdivajni.so
+make[1]: Leaving directory '/src/app/src/main/jni'
+rm -rf ../jniLibs/*
+cp -r ../libs/* ../jniLibs/

@@ -1,0 +1,16 @@
+$ ./build_diva_apk.sh diva-android deps out
+== [1/7] aapt2 compile resources (app + support libraries 23.1.0)
+== [2/7] aapt2 link (manifest, resources.arsc, R.java)
+== [3/7] javac (Java sources + generated R)
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+== [4/7] d8 (dex app classes + libraries)
+== [5/7] package classes.dex + jniLibs (libdivajni.so)
+== [6/7] zipalign
+== [7/7] apksigner (Android debug keystore)
+Signer #1 certificate DN: CN=Android Debug, O=Android, C=US
+Signer #1 certificate SHA-256 digest: 8c69cc1a8d626dc415fe31b4cd82bf40cc05b58f95312ef7ea52ffe316173f2f
+Signer #1 certificate SHA-1 digest: 3e1efe30cf27b28b0d0b41764f2f844753d9934f
+BUILD SUCCESSFUL -> /tmp/claude-0/work/out/app-debug.apk
+-rw-r--r-- 1 root root 1450452 Oct 28 17:57 /tmp/claude-0/work/out/app-debug.apk
+4adc2de8a86d958fce181a067588fa9891f67be58b87aaf0629750ee9fa28331  /tmp/claude-0/work/out/app-debug.apk

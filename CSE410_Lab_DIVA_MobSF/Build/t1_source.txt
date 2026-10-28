@@ -1,0 +1,13 @@
+$ git clone https://github.com/payatu/diva-android.git
+Cloning into 'diva-android'... done.
+$ cd diva-android && git log -1 --format="%H %ad %s"
+2bb63b531ba66c22563ac0911973389e2a0cb723 Fri Jan 15 15:43:59 2016 +0530 Update README.md with instructions to compile
+$ ls
+Diva.iml LICENSE README.md app build.gradle gradle gradle.properties gradlew gradlew.bat local.properties settings.gradle 
+$ cat app/build.gradle | grep -E "applicationId|minSdk|targetSdk|compileSdk|support"
+    compileSdkVersion 23
+        applicationId "jakhar.aseem.diva"
+        minSdkVersion 15
+        targetSdkVersion 23
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'

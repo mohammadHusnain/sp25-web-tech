@@ -1,0 +1,66 @@
+[INFO] 28/Oct/2026 18:02:33 - MIME Type: application/vnd.android.package-archive FILE: diva-app-debug.apk
+[INFO] 28/Oct/2026 18:02:33 - Android APK uploaded
+[INFO] 28/Oct/2026 18:02:33 - Scan Hash: 299b15c63aac6aae44ce42281e768b4c
+[INFO] 28/Oct/2026 18:02:33 - Starting Analysis on: diva-app-debug.apk
+[INFO] 28/Oct/2026 18:02:33 - Generating Hashes
+[INFO] 28/Oct/2026 18:02:33 - Extracting APK
+[INFO] 28/Oct/2026 18:02:33 - Unzipping
+[INFO] 28/Oct/2026 18:02:34 - Parsing APK with androguard
+[INFO] 28/Oct/2026 18:02:34 - Extracting APK features using aapt/aapt2
+[INFO] 28/Oct/2026 18:02:34 - Getting Hardcoded Certificates/Keystores
+[INFO] 28/Oct/2026 18:02:34 - Getting AndroidManifest.xml from APK
+[INFO] 28/Oct/2026 18:02:34 - Converting AXML to XML with apktool
+[INFO] 28/Oct/2026 18:02:37 - Parsing AndroidManifest.xml
+[INFO] 28/Oct/2026 18:02:37 - Extracting Manifest Data
+[INFO] 28/Oct/2026 18:02:37 - Manifest Analysis Started
+[INFO] 28/Oct/2026 18:02:37 - Performing Static Analysis on: Diva (jakhar.aseem.diva)
+[WARNING] 28/Oct/2026 18:02:37 - Google Play Store is not reachable. Skipping Play Store lookup.
+[INFO] 28/Oct/2026 18:02:37 - Checking for Malware Permissions
+[INFO] 28/Oct/2026 18:02:37 - Fetching icon path
+[INFO] 28/Oct/2026 18:02:37 - Library Binary Analysis Started
+[INFO] 28/Oct/2026 18:02:37 - Analyzing lib/armeabi-v7a/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing lib/arm64-v8a/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing lib/riscv64/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing lib/x86/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing lib/x86_64/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing apktool_out/lib/armeabi-v7a/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing apktool_out/lib/arm64-v8a/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing apktool_out/lib/riscv64/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing apktool_out/lib/x86/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Analyzing apktool_out/lib/x86_64/libdivajni.so
+[INFO] 28/Oct/2026 18:02:37 - Reading Code Signing Certificate
+[INFO] 28/Oct/2026 18:02:37 - Getting Signature Versions
+[INFO] 28/Oct/2026 18:02:37 - Running APKiD 3.2.0
+[WARNING] 28/Oct/2026 18:02:38 - No Internet Connection. Skipping Trackers Database Update.
+[INFO] 28/Oct/2026 18:02:38 - Detecting Trackers
+[INFO] 28/Oct/2026 18:02:38 - Decompiling APK to Java with JADX
+[INFO] 28/Oct/2026 18:02:47 - Converting DEX to Smali
+[INFO] 28/Oct/2026 18:02:47 - Converting classes.dex to Smali Code
+[INFO] 28/Oct/2026 18:02:47 - Code Analysis Started on - java_source
+[INFO] 28/Oct/2026 18:02:47 - Reading file contents for SAST
+[INFO] 28/Oct/2026 18:02:47 - Android SBOM Analysis Completed
+[INFO] 28/Oct/2026 18:02:47 - Android SAST Completed
+[INFO] 28/Oct/2026 18:02:47 - Android API Analysis Started
+[INFO] 28/Oct/2026 18:02:48 - Android API Analysis Completed
+[INFO] 28/Oct/2026 18:02:48 - Android Permission Mapping Started
+[INFO] 28/Oct/2026 18:02:49 - Android Permission Mapping Completed
+[INFO] 28/Oct/2026 18:02:49 - Android Behaviour Analysis Started
+[INFO] 28/Oct/2026 18:02:50 - Android Behaviour Analysis Completed
+[INFO] 28/Oct/2026 18:02:50 - Extracting Emails and URLs from Source Code
+[INFO] 28/Oct/2026 18:02:50 - Email and URL Extraction Completed
+[INFO] 28/Oct/2026 18:02:50 - Extracting String data from APK
+[INFO] 28/Oct/2026 18:02:50 - Extracting String data from SO
+[INFO] 28/Oct/2026 18:02:50 - Extracting String data from Code
+[INFO] 28/Oct/2026 18:02:50 - Extracting String values and entropies from Code
+[INFO] 28/Oct/2026 18:02:50 - Starting Firebase Analysis
+[INFO] 28/Oct/2026 18:02:50 - Looking for Firebase URL(s)
+[INFO] 28/Oct/2026 18:02:50 - Analyzing 1 domains
+[WARNING] 28/Oct/2026 18:02:50 - Internet not available. Skipping Malware Database Update.
+[INFO] 28/Oct/2026 18:02:50 - Malware analysis completed: 0 malicious domains found
+[INFO] 28/Oct/2026 18:02:50 - Saving to Database
+[INFO] 28/Oct/2026 18:02:50 - Scan Hash: 299b15c63aac6aae44ce42281e768b4c
+[INFO] 28/Oct/2026 18:02:50 - Starting Analysis on: diva-app-debug.apk
+[INFO] 28/Oct/2026 18:03:17 - Scan Hash: 299b15c63aac6aae44ce42281e768b4c
+[INFO] 28/Oct/2026 18:03:17 - Starting Analysis on: diva-app-debug.apk
+[INFO] 28/Oct/2026 18:03:34 - Scan Hash: 299b15c63aac6aae44ce42281e768b4c
+[INFO] 28/Oct/2026 18:03:34 - Starting Analysis on: diva-app-debug.apk
