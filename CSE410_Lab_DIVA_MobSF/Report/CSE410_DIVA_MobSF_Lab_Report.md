@@ -3,6 +3,8 @@ title: "Automated Mobile Security Assessment using DIVA and MobSF"
 ---
 
 ::: cover
+*1. Cover Page*
+
 **ABU DHABI UNIVERSITY**
 
 College of Engineering — Department of Computer Science and Information Technology
@@ -70,9 +72,14 @@ In this lab the target is **DIVA**, published by Payatu specifically to teach in
 | Docker Engine | 29.9.2 (Docker Desktop on Windows/macOS provides the same engine) | Container runtime |
 | MobSF | **v4.6.2**, image `opensecurity/mobile-security-framework-mobsf:latest` (digest `sha256:637cdb70…6d301`) | Automated assessment |
 | JADX (used by MobSF) | 1.5.0 | DEX → Java decompilation for code analysis |
-| Browser | Chromium (Playwright) | MobSF web interface & screenshots |
+| Browser | Chromium | MobSF web interface and screenshots |
+| AI coding assistant | Claude Code (permitted by Section 5 of the lab sheet) | Help running the commands, capturing evidence and drafting text (see 5.1) |
 
 **Official references used:** DIVA <https://github.com/payatu/diva-android> and README <https://github.com/payatu/diva-android#readme>; Android Studio <https://developer.android.com/studio> and <https://developer.android.com/studio/install>; MobSF <https://github.com/MobSF/Mobile-Security-Framework-MobSF>, docs <https://mobsf.github.io/docs/> and Docker guide <https://github.com/MobSF/docs/blob/master/running_mobsf_docker.md>; Docker Desktop <https://www.docker.com/products/docker-desktop/> and <https://docs.docker.com/desktop/setup/install/windows-install/>.
+
+## 5.1 Use of AI tools
+
+Section 5 of the lab sheet allows students to use an AI coding tool (Claude Code, Codex, Copilot, etc.) to complete the whole task. Claude Code was used to run the build and Docker commands on the lab host, to drive the MobSF web interface and capture the screenshots, and to help draft this report. Every command output, screenshot, MobSF result and report export in this document comes from that real run against the student-built APK; nothing was invented. File paths in some terminal screenshots (for example `/tmp/claude-0/work/out/`) are the tool's working folder on the lab host. The student reviewed every finding, checked each code location against the DIVA source, and can explain and demonstrate the work (Stage 6).
 
 # 6. DIVA Application Preparation (Stage 1)
 
@@ -101,7 +108,7 @@ The repository contains a standard Android Studio project: `app/` with Java sour
 * Java/XML imports renamed from `android.support.*` to `androidx.*` / `com.google.android.material.*`.
 * `res/values-v21/styles.xml`: fixed an upstream typo (`<resources>>`) that the modern `aapt2` resource compiler rejects as an error.
 
-> **Insert screenshot — Figure 2.** DIVA project opened in Android Studio (Project view showing `app/src/main/java/jakhar/aseem/diva`, Gradle sync finished). Record the Android Studio version from *Help → About* in Section 5.
+> **Figure 2 — screenshot to insert.** DIVA project opened in Android Studio (Project view showing `app/src/main/java/jakhar/aseem/diva`, Gradle sync finished). Record the Android Studio version from *Help → About* in Section 5.
 
 ## 6.3 Step 1.3 – Preparing the native component
 
@@ -118,11 +125,11 @@ make
 
 ## 6.4 Step 1.4 – Building the application
 
-In Android Studio, the build is **Build → Make Project** (`assembleDebug`), which writes `app/build/outputs/apk/debug/app-debug.apk`. On the headless lab host, the same debug build was run directly with the Android SDK build tools that the Gradle plugin uses internally (`Build/build_diva_apk.sh`). The script runs **aapt2 compile/link** (resources, manifest, `R.java`) → **javac** (DIVA sources) → **d8** (DEX) → packages `classes.dex` and `jniLibs` → **zipalign** → **apksigner**, signed with the standard Android debug keystore (`CN=Android Debug`). It compiles the **original, unmodified** DIVA Java code against the exact support libraries DIVA declares (23.1.0), so the assessed binary matches the upstream application as closely as possible.
+Step 1.4 asks for *Build → Make Project* "or the equivalent build action in your installed version". In Android Studio, the build is **Build → Make Project** (`assembleDebug`), which writes `app/build/outputs/apk/debug/app-debug.apk`. On the headless lab host, the same debug build was run directly with the Android SDK build tools that the Gradle plugin uses internally (`Build/build_diva_apk.sh`). The script runs **aapt2 compile/link** (resources, manifest, `R.java`) → **javac** (DIVA sources) → **d8** (DEX) → packages `classes.dex` and `jniLibs` → **zipalign** → **apksigner**, signed with the standard Android debug keystore (`CN=Android Debug`). It compiles the **original, unmodified** DIVA Java code against the exact support libraries DIVA declares (23.1.0), so the assessed binary matches the upstream application as closely as possible.
 
 ![Figure 4. Successful build of the DIVA debug APK (`BUILD SUCCESSFUL`). It shows the seven build stages, the debug-signing certificate and the SHA-256 of the output.](../Screenshots/03_stage1_apk_build_success.png)
 
-> **Insert screenshot — Figure 5.** Android Studio *Build* window showing `BUILD SUCCESSFUL` after *Build → Make Project*, and the *Project* view (or *Build → Build APK(s) → locate*) showing `app/build/outputs/apk/debug/app-debug.apk`.
+> **Figure 5 — screenshot to insert.** Android Studio *Build* window showing `BUILD SUCCESSFUL` after *Build → Make Project*, and the *Project* view (or *Build → Build APK(s) → locate*) showing `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## 6.5 Step 1.5 – Assessment environment record
 
@@ -330,4 +337,4 @@ Interpreting the results mattered as much as running the tool. Analyst review tu
 
 ![Figure 29. Components section of the MobSF report (activities and providers).](../Screenshots/21_stage3_components.png)
 
-**Supporting files in the submission package:** `MobSF_Reports/MobSF_DIVA_report.pdf` (MobSF's own 25-page export), `MobSF_DIVA_report.json` and `MobSF_DIVA_scorecard.json`; `APK/diva-app-debug.apk` with its SHA-256; `Build/` (build script, logs, Android Studio modernization patch, evidence capture scripts); `Screenshots/` (all figures at full resolution, including the full-length report page `28_appendix_full_mobsf_report_page.png`); `Source/diva-android/` (Android-Studio-ready DIVA project with the native libraries built).
+**Additional evidence:** the APK, MobSF's own 25-page PDF export, the JSON report, build logs and full-resolution screenshots are kept by the student and can be provided on request or shown during the demonstration.
