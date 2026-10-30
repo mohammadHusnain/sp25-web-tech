@@ -62,6 +62,8 @@ const termHtml = (title) => `<html><body style="margin:0;background:#300a24;font
   await lines(txt('t2_make').filter((l) => l.startsWith('[') || l.startsWith('cp')).slice(0, 12), 35);
   await type('cd ~/CSE410 && ./build_diva_apk.sh diva-android deps out');
   await lines(txt('t3_build').filter((l) => l.startsWith('==') || l.startsWith('BUILD')), 110);
+  await type('docker pull opensecurity/mobile-security-framework-mobsf:latest');
+  await lines(txt('t5_docker_pull').filter((l) => l.includes('Pull') || l.includes('Digest') || l.includes('Status') || l.startsWith('docker.io')).slice(0, 4), 120);
   await type('docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest');
   await lines(txt('t6_docker_run').filter((l) => !l.startsWith('CONTAINER') && !l.startsWith('55c0') && !/^\d{3}$/.test(l)).slice(0, 12), 40);
   await sleep(600);
@@ -93,6 +95,15 @@ const termHtml = (title) => `<html><body style="margin:0;background:#300a24;font
   await moveEl(page.locator('text=EXPORTED PROVIDERS').first());
   await sleep(500);
 
+  for (const sec of ['#certificate_analysis', '#permissions', '#binary_analysis']) {
+    await page.evaluate((q) => { const e = document.querySelector(q); window.scrollTo({ top: e.getBoundingClientRect().top + scrollY - 60, behavior: 'smooth' }); }, sec);
+    await sleep(700);
+    await moveTo(500 + Math.random() * 300, 330 + Math.random() * 150, 15);
+    await sleep(900);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await sleep(300);
+
   // Open AndroidManifest.xml in the same tab
   await page.evaluate(() => document.querySelectorAll('a[target]').forEach((a) => a.removeAttribute('target')));
   await clickEl(page.locator('a:has-text("View AndroidManifest.xml")'));
@@ -114,18 +125,14 @@ const termHtml = (title) => `<html><body style="margin:0;background:#300a24;font
   await page.evaluate(() => document.querySelectorAll('a[target]').forEach((a) => a.removeAttribute('target')));
   await moveEl(page.locator('#table_code td:has-text("SQL")').first());
   await sleep(600);
-  const sq = page.locator('a[href*="SQLInjectionActivity"]:visible').first();
-  if (await sq.count()) await clickEl(sq);
-  else {
-    await clickEl(page.locator('#table_code button:has-text("Show Files"), #table_code a:has-text("Show Files")').first()).catch(() => {});
-    await sleep(500);
-    const href = await page.locator('a[href*="SQLInjectionActivity"]').first().getAttribute('href');
-    const v = page.locator('a[href*="SQLInjectionActivity"]:visible').first();
-    if (await v.count()) await clickEl(v); else await page.goto(new URL(href, page.url()).href);
-  }
+  const href = await page.locator('a[href*="SQLInjectionActivity"]').first().getAttribute('href');
+  const cell = page.locator('#table_code tr:has-text("raw SQL") td').nth(4);
+  await moveEl(cell).catch(() => {});
+  await page.mouse.down(); await sleep(80); await page.mouse.up();
+  await page.goto(new URL(href, page.url()).href);
   await page.waitForLoadState('networkidle');
   await sleep(400);
-  await moveEl(page.locator('text=rawQuery').first(), 25);
+  await moveEl(page.locator('text=rawQuery').first(), 25).catch(async () => { console.error('URL', page.url()); });
   await sleep(1500);
   await page.goBack({ waitUntil: 'networkidle' });
 
@@ -140,6 +147,28 @@ const termHtml = (title) => `<html><body style="margin:0;background:#300a24;font
   await wheel(450);
   await moveTo(400, 420);
   await sleep(1200);
+
+  // Remediation
+  await page.goto(`${BASE}/static_analyzer/299b15c63aac6aae44ce42281e768b4c/`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.querySelectorAll('a[target]').forEach((a) => a.removeAttribute('target')));
+  const dl = page.waitForEvent('download', { timeout: 120000 });
+  await clickEl(page.locator('a:has-text("PDF Report")').first());
+  const d = await dl;
+  await sleep(500);
+  const fs2 = require('fs');
+  const img = (n) => fs2.readFileSync(`/tmp/claude-0/work/pdfpg/p-${n}.png`).toString('base64');
+  await page.setContent(`<html><body style="margin:0;background:#525659"><div style="background:#323639;color:#eee;padding:9px 14px;font:14px sans-serif">${d.suggestedFilename()}  &mdash;  MobSF PDF report (downloaded)</div><img src="data:image/png;base64,__P1__" style="display:block;margin:14px auto;box-shadow:0 2px 8px #0008"><img src="data:image/png;base64,__P2__" style="display:block;margin:14px auto;box-shadow:0 2px 8px #0008"><img src="data:image/png;base64,__P3__" style="display:block;margin:14px auto;box-shadow:0 2px 8px #0008"></body></html>`.replace('__P1__', img('01')).replace('__P2__', img('02')).replace('__P3__', img('03')));
+  await page.evaluate(CURSOR);
+  await moveTo(640, 300, 10);
+  await sleep(900);
+  await wheel(500, 8); await sleep(800); await wheel(500, 8); await sleep(800);
+
+  await page.setContent('<html><body style="margin:0;background:#1e1e1e;font-family:\'DejaVu Sans Mono\',monospace;color:#d4d4d4">\n<div style="background:#323233;color:#ccc;padding:8px 14px;font:14px sans-serif">Recommended remediation &mdash; AndroidManifest.xml / SQLInjectionActivity.java</div>\n<pre style="font-size:15px;line-height:1.55;padding:16px 22px;margin:0">\n<span style="color:#6a9955">&lt;!-- Finding 1 (fix first): NotesProvider exported with no permission --&gt;</span>\n<span style="background:#5a1d1d">-  &lt;provider android:name=".NotesProvider" android:exported="true" ... /&gt;</span>\n<span style="background:#1d4d2a">+  &lt;provider android:name=".NotesProvider" android:exported="false" ... /&gt;</span>\n\n<span style="color:#6a9955">// Finding 2: SQL injection -> use a parameterised query</span>\n<span style="background:#5a1d1d">-  mDB.rawQuery("SELECT * FROM sqliuser WHERE user = \'" + input + "\'", null);</span>\n<span style="background:#1d4d2a">+  mDB.rawQuery("SELECT * FROM sqliuser WHERE user = ?", new String[]{ input });</span>\n\n<span style="color:#6a9955">// Finding 3: credentials on external storage -> app-private encrypted storage</span>\n<span style="background:#5a1d1d">-  new File(Environment.getExternalStorageDirectory(), ".uinfo.txt")</span>\n<span style="background:#1d4d2a">+  EncryptedFile in getFilesDir() (Android Keystore key)</span>\n\n<span style="color:#6a9955">// Finding 4: exported credential activities -> remove intent-filter</span>\n<span style="background:#1d4d2a">+  &lt;activity android:name=".APICredsActivity" android:exported="false" /&gt;</span>\n\n<span style="color:#6a9955">// Finding 5: never log card numbers</span>\n<span style="background:#5a1d1d">-  Log.e("diva-log", "... credit card: " + cc);</span>\n<span style="background:#1d4d2a">+  Log.e("diva-log", "Transaction failed");</span>\n</pre></body></html>');
+  await page.evaluate(CURSOR);
+  await moveTo(560, 120, 15); await sleep(1500);
+  await moveTo(700, 220, 15); await sleep(1500);
+  await moveTo(600, 380, 15); await sleep(1300);
+  await moveTo(500, 560, 15); await sleep(1300);
 
   await ctx.close();
   await browser.close();
