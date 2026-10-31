@@ -6,7 +6,7 @@ Complete submission package for the CSE410 (Fall 2026–2027) CLO1 laboratory ex
 
 | Path | What it is | Lab stage |
 |---|---|---|
-| `Report/CSE410_DIVA_MobSF_Lab_Report.pdf` | **Final report to submit.** It contains all 14 required headings plus Appendix A, 29 captioned figures, and the results table. | All |
+| `Report/CSE410_DIVA_MobSF_Lab_Report.pdf` | **Final report to submit.** It contains all 14 required headings plus Appendix A, 27 captioned figures, and the results table. | All |
 | `Report/CSE410_DIVA_MobSF_Lab_Report.docx` | Editable version of the same report, for filling in your details and adding screenshots. | All |
 | `Report/CSE410_DIVA_MobSF_Lab_Report.md` | Source of the report (Markdown). | – |
 | `APK/diva-app-debug.apk` (+ `.sha256`) | DIVA APK built from source; this is the file assessed by MobSF. | 1, 3 |
@@ -28,14 +28,9 @@ Complete submission package for the CSE410 (Fall 2026–2027) CLO1 laboratory ex
   5. Sensitive data written to logs.
 - Validation: one false positive (`pkey: notespin`) and several false negatives (hardcoded `vendorsecretkey`, `123secretapikey123`, native key `olsdfgad;lh`).
 
-## Before submitting, you must
-1. Fill in the cover-page placeholders in the DOCX: `[Student Name]`, `[Student ID]`, `[Group ID]`, `[Submission Date]`, plus the Android Studio version in Sections 5 and 6.5.
-2. Add the **two Android Studio screenshots** marked in orange boxes:
-   - **Figure 2:** the project opened in Android Studio.
-   - **Figure 5:** `BUILD SUCCESSFUL` after *Build → Make Project*.
-
-   To produce them, open `Source/diva-android` in Android Studio, let Gradle sync, then run Build → Make Project. These screenshots could not be taken on the headless lab host, and they must show your own machine.
-3. Export the DOCX to PDF (*File → Save As → PDF*) and submit the PDF on Blackboard.
+## Before submitting
+1. Open `Report/CSE410_DIVA_MobSF_Lab_Report.docx` and fill in `[Student Name]`, `[Student ID]`, `[Group ID]` and `[Submission Date]` on the cover.
+2. Save it as PDF and submit that PDF on Blackboard.
 
 ## Reproducing the build without Android Studio
 ```bash
