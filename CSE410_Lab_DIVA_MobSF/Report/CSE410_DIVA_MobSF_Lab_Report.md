@@ -63,7 +63,7 @@ In this lab the target is **DIVA**, published by Payatu specifically to teach in
 |---|---|---|
 | Host operating system | Ubuntu 24.04.5 LTS, Linux 6.18 x86-64, 4 CPU / 16 GB RAM | Lab host |
 | DIVA Android | `payatu/diva-android` @ `2bb63b531ba6` | Assessment target |
-| Android Studio | `[record your installed version, e.g. Help → About]` | IDE used to open/sync/build the project (see 6.2) |
+| Android Studio | Not installed on the assessment host. Step 1.4's "equivalent build action" was used (Section 6.4); an Android-Studio-ready project is provided | IDE route documented in 6.2 |
 | Android SDK build-tools | 35.0.0 (aapt2, d8, zipalign, apksigner) | APK build toolchain (what Android Studio's Gradle build invokes) |
 | Android SDK platform | android-34 (`android.jar`) | Compile SDK |
 | Android NDK | 29.0.14206865 (`ndk-build`) | Native library `libdivajni.so` |
@@ -92,7 +92,7 @@ The repository contains a standard Android Studio project: `app/` with Java sour
 
 ## 6.2 Step 1.2 – Opening the project in Android Studio
 
-**Procedure:** Android Studio → *File → Open* → select the `diva-android` folder → *Trust Project* → allow Gradle sync, and install any SDK components it asks for.
+**Procedure (Android Studio route):** Android Studio → *File → Open* → select the `diva-android` folder → *Trust Project* → allow Gradle sync, and install any SDK components it asks for.
 
 **Version difference (documented as required by Section 5 of the lab sheet).** DIVA was written in 2015. Its build scripts use Android Gradle Plugin 1.3.0, Gradle 2.4, the `jcenter()` repository (shut down) and `compile` dependency syntax. A current Android Studio cannot sync these, and it offers to upgrade the project with the AGP Upgrade Assistant. Only normal project/build dependency errors were fixed. The application code, its vulnerabilities and its SDK levels were not changed. The fixes are in `Build/diva-android-studio-modernization.patch` and are already applied in `Source/diva-android/`:
 
@@ -103,7 +103,6 @@ The repository contains a standard Android Studio project: `app/` with Java sour
 * Java/XML imports renamed from `android.support.*` to `androidx.*` / `com.google.android.material.*`.
 * `res/values-v21/styles.xml`: fixed an upstream typo (`<resources>>`) that the modern `aapt2` resource compiler rejects as an error.
 
-> **Figure 2 — screenshot to insert.** DIVA project opened in Android Studio (Project view showing `app/src/main/java/jakhar/aseem/diva`, Gradle sync finished). Record the Android Studio version from *Help → About* in Section 5.
 
 ## 6.3 Step 1.3 – Preparing the native component
 
@@ -114,7 +113,7 @@ cd app/src/main/jni
 make
 ```
 
-![Figure 3. `make` in `app/src/main/jni` compiled `libdivajni.so` for armeabi-v7a, arm64-v8a, x86, x86_64 and riscv64 and copied the libraries into `jniLibs/`.](../Screenshots/02_stage1_native_make.png)
+![Figure 2. `make` in `app/src/main/jni` compiled `libdivajni.so` for armeabi-v7a, arm64-v8a, x86, x86_64 and riscv64 and copied the libraries into `jniLibs/`.](../Screenshots/02_stage1_native_make.png)
 
 *Observation:* NDK r29 cannot target API levels below 21. It warns that the native library will not load on devices older than Android 5.0, even though the app's `minSdkVersion` is 15. This does not affect static analysis.
 
@@ -122,9 +121,8 @@ make
 
 Step 1.4 asks for *Build → Make Project* "or the equivalent build action in your installed version". In Android Studio, the build is **Build → Make Project** (`assembleDebug`), which writes `app/build/outputs/apk/debug/app-debug.apk`. On the headless lab host, the same debug build was run directly with the Android SDK build tools that the Gradle plugin uses internally (`Build/build_diva_apk.sh`). The script runs **aapt2 compile/link** (resources, manifest, `R.java`) → **javac** (DIVA sources) → **d8** (DEX) → packages `classes.dex` and `jniLibs` → **zipalign** → **apksigner**, signed with the standard Android debug keystore (`CN=Android Debug`). It compiles the **original, unmodified** DIVA Java code against the exact support libraries DIVA declares (23.1.0), so the assessed binary matches the upstream application as closely as possible.
 
-![Figure 4. Successful build of the DIVA debug APK (`BUILD SUCCESSFUL`). It shows the seven build stages, the debug-signing certificate and the SHA-256 of the output.](../Screenshots/03_stage1_apk_build_success.png)
+![Figure 3. Successful build of the DIVA debug APK (`BUILD SUCCESSFUL`). It shows the seven build stages, the debug-signing certificate and the SHA-256 of the output.](../Screenshots/03_stage1_apk_build_success.png)
 
-> **Figure 5 — screenshot to insert.** Android Studio *Build* window showing `BUILD SUCCESSFUL` after *Build → Make Project*, and the *Project* view (or *Build → Build APK(s) → locate*) showing `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## 6.5 Step 1.5 – Assessment environment record
 
@@ -140,9 +138,9 @@ Step 1.4 asks for *Build → Make Project* "or the equivalent build action in yo
 | APK MD5 (MobSF scan hash) | `299b15c63aac6aae44ce42281e768b4c` |
 | Signing | Android debug certificate, APK signature schemes v1 + v2 + v3 |
 | Native libraries | `lib/{armeabi-v7a,arm64-v8a,x86,x86_64,riscv64}/libdivajni.so` |
-| Build OS / Android Studio | Ubuntu 24.04.5 LTS / `[your Android Studio version]` |
+| Build OS / build tool | Ubuntu 24.04.5 LTS / Android SDK build-tools 35.0.0 (command-line equivalent of *Build → Make Project*) |
 
-![Figure 6. Generated APK checked with `aapt2 dump badging`: package `jakhar.aseem.diva`, SDK levels, permissions, `classes.dex`, `resources.arsc` and the bundled native libraries.](../Screenshots/04_stage1_generated_apk_details.png)
+![Figure 4. Generated APK checked with `aapt2 dump badging`: package `jakhar.aseem.diva`, SDK levels, permissions, `classes.dex`, `resources.arsc` and the bundled native libraries.](../Screenshots/04_stage1_generated_apk_details.png)
 
 # 7. MobSF Setup (Stage 2)
 
@@ -154,19 +152,19 @@ Step 1.4 asks for *Build → Make Project* "or the equivalent build action in yo
 docker pull opensecurity/mobile-security-framework-mobsf:latest
 ```
 
-![Figure 7. Official MobSF image pulled from Docker Hub (`Status: Downloaded newer image …`).](../Screenshots/05_stage2_docker_pull_mobsf.png)
+![Figure 5. Official MobSF image pulled from Docker Hub (`Status: Downloaded newer image …`).](../Screenshots/05_stage2_docker_pull_mobsf.png)
 
 **Step 2.3 – Starting MobSF.** The official command is `docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest`. On the headless host the same image was run detached with a container name, using `docker run -d --name mobsf -p 8000:8000 …`, so it would keep running between steps. The port mapping and image are identical.
 
-![Figure 8. MobSF container start-up log: MobSF v4.6.2 banner, default credentials `mobsf/mobsf`, and the container listening on `0.0.0.0:8000`. The REST API key is redacted.](../Screenshots/06_stage2_docker_run_mobsf.png)
+![Figure 6. MobSF container start-up log: MobSF v4.6.2 banner, default credentials `mobsf/mobsf`, and the container listening on `0.0.0.0:8000`. The REST API key is redacted.](../Screenshots/06_stage2_docker_run_mobsf.png)
 
 **Step 2.4 – Web interface.** `http://127.0.0.1:8000` opened the MobSF login page. The documented default credentials **mobsf / mobsf** were used.
 
-![Figure 9. MobSF login page at http://127.0.0.1:8000 (version 4.6.2 shown in the footer).](../Screenshots/07_stage2_mobsf_login.png)
+![Figure 7. MobSF login page at http://127.0.0.1:8000 (version 4.6.2 shown in the footer).](../Screenshots/07_stage2_mobsf_login.png)
 
 **Step 2.5 – Platform confirmed.** The dashboard (“Upload & Analyze”) loaded. **MobSF version: v4.6.2.**
 
-![Figure 10. MobSF dashboard after login, ready for upload. The footer confirms “Mobile Security Framework – MobSF v4.6.2”.](../Screenshots/08_stage2_mobsf_dashboard_v4.6.2.png)
+![Figure 8. MobSF dashboard after login, ready for upload. The footer confirms “Mobile Security Framework – MobSF v4.6.2”.](../Screenshots/08_stage2_mobsf_dashboard_v4.6.2.png)
 
 *Observation (documented setup difference):* MobSF downloads the JADX decompiler on first start. The lab container had no direct internet access, so the first scan logged “Decompiling with JADX failed” and produced an **empty code-analysis section**. The official JADX 1.5.0 release (the version MobSF requests) was placed in `~/.MobSF/tools/jadx/` and the container was restarted, because MobSF's anti-tampering check hashes tool binaries at start-up. The scan was then repeated. On a normal student PC with internet access this happens automatically.
 
@@ -175,29 +173,29 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 1. **Step 3.1 – Locate the APK:** `diva-app-debug.apk` from Stage 1 (SHA-256 above).
 2. **Step 3.2 – Upload:** on the MobSF dashboard, *Upload & Analyze* → select `diva-app-debug.apk`. MobSF accepted the file (MIME `application/vnd.android.package-archive`) and created the scan hash `299b15c63aac6aae44ce42281e768b4c`.
 3. **Step 3.3 – Automated analysis:** analysis was not interrupted. MobSF unpacked the APK, parsed it with androguard/aapt2, decoded the manifest with apktool, analysed the certificate and the five native libraries, ran APKiD, decompiled to Java (JADX 1.5.0) and Smali, and ran SAST, Android API, permission-mapping, behaviour, string/secret, URL and tracker analysis. The analysis took about 15 seconds.
-4. **Step 3.4 – Review:** every section of the static-analysis report was reviewed (Figures 13–21).
+4. **Step 3.4 – Review:** every section of the static-analysis report was reviewed (Figures 9–19).
 5. **Step 3.5 – Evidence saved:** screenshots were captured, and the report was exported with *PDF Report* (`MobSF_Reports/MobSF_DIVA_report.pdf`, 25 pages). The full JSON report and the scorecard JSON were also exported.
 6. **Step 3.6 – Metadata:** APK `diva-app-debug.apk`; MobSF **v4.6.2**; assessment date **28 October 2026** (scan timestamp 2026-10-28T18:02:33Z); app **Diva 1.0**, package `jakhar.aseem.diva`, main activity `.MainActivity`, target SDK 23, min SDK 15.
 
-![Figure 11. DIVA APK uploaded through the MobSF web interface; the static analysis is running.](../Screenshots/09_stage3_apk_upload_analysis_running.png)
+![Figure 9. DIVA APK uploaded through the MobSF web interface; the static analysis is running.](../Screenshots/09_stage3_apk_upload_analysis_running.png)
 
-![Figure 12. MobSF analysis log for the scan. It shows each automated step, including successful JADX decompilation and SAST.](../Screenshots/10_stage3_mobsf_scan_log.png)
+![Figure 10. MobSF analysis log for the scan. It shows each automated step, including successful JADX decompilation and SAST.](../Screenshots/10_stage3_mobsf_scan_log.png)
 
-![Figure 13. MobSF result page for the student-built DIVA APK. It shows the security score of 47/100, file hashes, application information (Diva, jakhar.aseem.diva, Target SDK 23, Min SDK 15), 2/17 exported activities, 1/1 exported provider and the signer certificate.](../Screenshots/11_stage3_result_page_overview.png)
+![Figure 11. MobSF result page for the student-built DIVA APK. It shows the security score of 47/100, file hashes, application information (Diva, jakhar.aseem.diva, Target SDK 23, Min SDK 15), 2/17 exported activities, 1/1 exported provider and the signer certificate.](../Screenshots/11_stage3_result_page_overview.png)
 
-![Figure 14. MobSF Application Security Scorecard: score 47, Grade B, “Medium Risk”, and High 2 / Medium 8 / Info 1 / Secure 1 / Hotspot 1, with each finding and its source section.](../Screenshots/12_stage3_appsec_scorecard.png)
+![Figure 12. MobSF Application Security Scorecard: score 47, Grade B, “Medium Risk”, and High 2 / Medium 8 / Info 1 / Secure 1 / Hotspot 1, with each finding and its source section.](../Screenshots/12_stage3_appsec_scorecard.png)
 
-![Figure 15. Certificate analysis: the APK is signed with a debug certificate (high) and has a v1 signature, so MobSF flags Janus (warning).](../Screenshots/14_stage3_certificate_analysis.png)
+![Figure 13. Certificate analysis: the APK is signed with a debug certificate (high) and has a v1 signature, so MobSF flags Janus (warning).](../Screenshots/14_stage3_certificate_analysis.png)
 
-![Figure 16. Permissions: WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE (dangerous) and INTERNET (normal).](../Screenshots/15_stage3_permissions.png)
+![Figure 14. Permissions: WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE (dangerous) and INTERNET (normal).](../Screenshots/15_stage3_permissions.png)
 
-![Figure 17. Manifest analysis: minSdk 15 (high); allowBackup=true; exported `.APICredsActivity` and `.APICreds2Activity` with intent filters; exported, unprotected `.NotesProvider` (warning).](../Screenshots/16_stage3_manifest_analysis.png)
+![Figure 15. Manifest analysis: minSdk 15 (high); allowBackup=true; exported `.APICredsActivity` and `.APICreds2Activity` with intent filters; exported, unprotected `.NotesProvider` (warning).](../Screenshots/16_stage3_manifest_analysis.png)
 
-![Figure 18. Code analysis (SAST): logging of sensitive information (CWE-532), raw SQL queries (CWE-89), temp-file creation and external-storage read/write (CWE-276), with the affected DIVA classes.](../Screenshots/17_stage3_code_analysis.png)
+![Figure 16. Code analysis (SAST): logging of sensitive information (CWE-532), raw SQL queries (CWE-89), temp-file creation and external-storage read/write (CWE-276), with the affected DIVA classes.](../Screenshots/17_stage3_code_analysis.png)
 
-![Figure 19. Shared-library binary analysis of `libdivajni.so`: NX, PIC and Full RELRO are present, but there is **no stack canary (high)**, because Android.mk builds with `-fno-stack-protector`. FORTIFY replaced `strcpy` with `__strcpy_chk`.](../Screenshots/18_stage3_shared_library_binary_analysis.png)
+![Figure 17. Shared-library binary analysis of `libdivajni.so`: NX, PIC and Full RELRO are present, but there is **no stack canary (high)**, because Android.mk builds with `-fno-stack-protector`. FORTIFY replaced `strcpy` with `__strcpy_chk`.](../Screenshots/18_stage3_shared_library_binary_analysis.png)
 
-![Figure 20. Possible hardcoded secrets (`"pkey" : "notespin"`) and strings extracted from the native libraries, including the native vendor key `olsdfgad;lh` and the code `.dotdot`.](../Screenshots/20_stage3_secrets_and_strings.png)
+![Figure 18. Possible hardcoded secrets (`"pkey" : "notespin"`) and strings extracted from the native libraries, including the native vendor key `olsdfgad;lh` and the code `.dotdot`.](../Screenshots/20_stage3_secrets_and_strings.png)
 
 # 9. Assessment Results
 
@@ -222,7 +220,7 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 ## 10.1 Finding 1 – Unprotected exported Content Provider (`.NotesProvider`) — Priority: **HIGH**
 
 * **MobSF severity:** Warning (Manifest analysis; shown as “medium” in the scorecard). Also counted in the dashboard as *1/1 exported providers*.
-* **What MobSF detected and where:** in the manifest, `<provider android:name=".NotesProvider" android:enabled="true" android:exported="true" android:authorities="jakhar.aseem.diva.provider.notesprovider"/>` has no `android:permission`, `readPermission` or `writePermission` (Figure 22, line 37). The provider (Figure 24) exposes `query`, `insert`, `update` and `delete` on the `notes` table of `divanotes.db`, and builds `"_id = " + uri.getLastPathSegment()` and caller-supplied `selection` strings directly into SQL.
+* **What MobSF detected and where:** in the manifest, `<provider android:name=".NotesProvider" android:enabled="true" android:exported="true" android:authorities="jakhar.aseem.diva.provider.notesprovider"/>` has no `android:permission`, `readPermission` or `writePermission` (Figure 20, line 37). The provider (Figure 22) exposes `query`, `insert`, `update` and `delete` on the `notes` table of `divanotes.db`, and builds `"_id = " + uri.getLastPathSegment()` and caller-supplied `selection` strings directly into SQL.
 * **Why it is a weakness:** an exported component is an IPC entry point that any other installed application can call. The app protects the notes behind a PIN in the UI (*Access Control 3*), but the provider exposes the same data with no access check. Access control is enforced only in the user interface, not at the data layer (CWE-926 / CWE-284).
 * **Impact:** a malicious app with **no permissions** can run `content://jakhar.aseem.diva.provider.notesprovider/notes` and read every private note (confidentiality). It can also update or delete them (integrity, availability), and inject into `selection` to reach other tables. In a real app the same pattern would leak messages, health or financial records.
 * **Why HIGH (although MobSF says warning):** exposure is maximal, because any co-installed app can exploit it silently, with no user interaction and no permission. The fix is trivial, so the risk-reduction-to-effort ratio is the best of all findings.
@@ -230,7 +228,7 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 ## 10.2 Finding 2 – SQL injection via raw query — Priority: **HIGH**
 
 * **MobSF severity:** Warning — CWE-89 (SQL Injection), OWASP Mobile M7 (Client Code Quality).
-* **What/where:** MobSF's rule `android_sql_raw_query` matched `SQLInjectionActivity.java` (decompiled lines 4 and 36), `InsecureDataStorage2Activity.java` and `NotesProvider.java`. At line 36 (Figure 23) the user's text is concatenated into the statement: `rawQuery("SELECT * FROM sqliuser WHERE user = '" + editText.getText() + "'", null)`. Lines 23–26 create the table with **plaintext** `password` and `credit_card` columns.
+* **What/where:** MobSF's rule `android_sql_raw_query` matched `SQLInjectionActivity.java` (decompiled lines 4 and 36), `InsecureDataStorage2Activity.java` and `NotesProvider.java`. At line 36 (Figure 21) the user's text is concatenated into the statement: `rawQuery("SELECT * FROM sqliuser WHERE user = '" + editText.getText() + "'", null)`. Lines 23–26 create the table with **plaintext** `password` and `credit_card` columns.
 * **Why it is a weakness:** user input becomes part of the SQL grammar. A single quote breaks out of the string literal, so the attacker controls the query logic.
 * **Impact:** entering `' OR '1'='1` makes the query return every row. The app then shows *all users, passwords and credit card numbers* (confidentiality). With other statements, data can be altered (integrity). The plaintext storage makes the impact worse, because the leaked data is directly usable. A real app would suffer account takeover and payment-card disclosure.
 * **Why HIGH:** the flaw is directly exploitable and needs no special tools. It leads to full disclosure of the most sensitive data in the app.
@@ -238,7 +236,7 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 ## 10.3 Finding 3 – Credentials stored on external storage / temp files — Priority: **HIGH**
 
 * **MobSF severity:** Warning — CWE-276 (Incorrect Default Permissions), OWASP M2 (Insecure Data Storage), MSTG-STORAGE-2. Related warning: *App creates temp file* (`InsecureDataStorage3Activity.java` line 25).
-* **What/where:** `InsecureDataStorage4Activity.java` line 26 (Figure 25) calls `Environment.getExternalStorageDirectory()`, then writes `username + ":" + password` to `/sdcard/.uinfo.txt` and calls `setReadable(true)` / `setWritable(true)`. The app requests `WRITE_/READ_EXTERNAL_STORAGE` (Figure 16, flagged as “dangerous” and a Hotspot).
+* **What/where:** `InsecureDataStorage4Activity.java` line 26 (Figure 23) calls `Environment.getExternalStorageDirectory()`, then writes `username + ":" + password` to `/sdcard/.uinfo.txt` and calls `setReadable(true)` / `setWritable(true)`. The app requests `WRITE_/READ_EXTERNAL_STORAGE` (Figure 14, flagged as “dangerous” and a Hotspot).
 * **Why it is a weakness:** shared external storage is outside the Android application sandbox. On the app's target SDK (23), any app with storage permission can read it. A dot-prefixed file name only hides the file and does not protect it.
 * **Impact:** third-party credentials are disclosed to other apps, backup tools, anyone with USB access, or someone who removes the SD card. The file stays after uninstall. This is a loss of confidentiality that leads to compromised third-party accounts (authentication).
 * **Why HIGH:** the data is credentials, the storage location is world-readable by design, and exploiting it needs only a common permission.
@@ -246,7 +244,7 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 ## 10.4 Finding 4 – Exported activities with intent filters (`.APICredsActivity`, `.APICreds2Activity`) — Priority: **MEDIUM**
 
 * **MobSF severity:** Warning (Manifest) — “Activity is not Protected. An intent-filter exists.” The dashboard shows *2/17 exported activities*.
-* **What/where:** in the manifest (Figure 22, lines 24–36) the activities declare intent filters for the custom actions `jakhar.aseem.diva.action.VIEW_CREDS` / `VIEW_CREDS2` with `category.DEFAULT`. Because of this they are implicitly exported (target SDK 23), with no permission. `APICredsActivity` puts the string `"API Key: 123secretapikey123\nAPI User name: diva\nAPI Password: p@ssword"` on screen. `APICreds2Activity` is meant to require a PIN, but it trusts an intent extra.
+* **What/where:** in the manifest (Figure 20, lines 24–36) the activities declare intent filters for the custom actions `jakhar.aseem.diva.action.VIEW_CREDS` / `VIEW_CREDS2` with `category.DEFAULT`. Because of this they are implicitly exported (target SDK 23), with no permission. `APICredsActivity` puts the string `"API Key: 123secretapikey123\nAPI User name: diva\nAPI Password: p@ssword"` on screen. `APICreds2Activity` is meant to require a PIN, but it trusts an intent extra.
 * **Why it is a weakness:** an exported activity can be started by any app. Using intent filters for internal navigation exposes screens that should only be reached after an in-app check (CWE-926).
 * **Impact:** `adb shell am start -a jakhar.aseem.diva.action.VIEW_CREDS`, or a malicious app, opens the credentials screen directly. That bypasses the authorization flow and discloses API credentials. Those could be used against the vendor backend.
 * **Why MEDIUM:** the impact is credential disclosure, but exposure is lower than in Finding 1. The data appears on screen rather than being returned to the calling app, so harvesting it needs adb/screen access or a second weakness. The root problem, hardcoded API credentials in the client, also needs fixing.
@@ -254,15 +252,15 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 ## 10.5 Finding 5 – Sensitive information written to logs — Priority: **MEDIUM**
 
 * **MobSF severity:** Info — CWE-532 (Insertion of Sensitive Information into Log File), MSTG-STORAGE-3. **MobSF's rating is kept as “info”.** I raise only the *remediation priority* to Medium, because the logged value is a full payment card number.
-* **What/where:** `LogActivity.java` decompiled line 24 (Figure 26): `Log.e("diva-log", "Error while processing transaction with credit card: " + cctxt.getText())`. MobSF also lists log calls in AccessControl1/2, InsecureDataStorage2/3/4 and SQLInjectionActivity. Those mostly log exception messages and are lower risk.
+* **What/where:** `LogActivity.java` decompiled line 24 (Figure 24): `Log.e("diva-log", "Error while processing transaction with credit card: " + cctxt.getText())`. MobSF also lists log calls in AccessControl1/2, InsecureDataStorage2/3/4 and SQLInjectionActivity. Those mostly log exception messages and are lower risk.
 * **Why it is a weakness:** logcat is a shared system facility. Its contents are kept in buffers, included in bug reports, read by crash-reporting SDKs, and visible to anyone using adb.
 * **Impact:** cardholder data is disclosed (privacy, PCI-DSS). On Android 4.0.x, which is still allowed by minSdk 15, any app with `READ_LOGS` can read the logs of other apps.
 * **Why MEDIUM:** reading the log needs adb, a bug report or a legacy device, so exposure is lower than for Findings 1–3. The data is still highly sensitive, and the fix is trivial.
 
 ## 10.6 Step 4.6 – Limitation / false positive requiring manual verification
 
-1. **False positive – “Possible hardcoded secret” `"pkey" : "notespin"`** (Figure 20). Manual review of `res/values/strings.xml` (line 85) and `AccessControl3Activity.java` (line 72) shows that `notespin` is only the **name of the SharedPreferences key** under which the PIN is stored. It is not a secret. MobSF's entropy and keyword matching flagged it because of the name `pkey`.
-2. **False negatives – real secrets that MobSF did not report as secrets.** `HardcodeActivity.java` compares input with the literal `"vendorsecretkey"` (Figure 27). `APICredsActivity` contains `123secretapikey123` and `p@ssword`. The native library contains the vendor key `olsdfgad;lh`, which appears only in the raw *Strings* list (Figure 20) and not under *Secrets*. `InsecureDataStorage1Activity` stores the password in plaintext SharedPreferences, which MobSF did not flag at all.
+1. **False positive – “Possible hardcoded secret” `"pkey" : "notespin"`** (Figure 18). Manual review of `res/values/strings.xml` (line 85) and `AccessControl3Activity.java` (line 72) shows that `notespin` is only the **name of the SharedPreferences key** under which the PIN is stored. It is not a secret. MobSF's entropy and keyword matching flagged it because of the name `pkey`.
+2. **False negatives – real secrets that MobSF did not report as secrets.** `HardcodeActivity.java` compares input with the literal `"vendorsecretkey"` (Figure 25). `APICredsActivity` contains `123secretapikey123` and `p@ssword`. The native library contains the vendor key `olsdfgad;lh`, which appears only in the raw *Strings* list (Figure 18) and not under *Secrets*. `InsecureDataStorage1Activity` stores the password in plaintext SharedPreferences, which MobSF did not flag at all.
 3. **Context-dependent “High” findings.** *Application signed with debug certificate* and *minSdk 15* are true for this lab build, but they come from how the build was configured, not from DIVA's code. A release build signed with a production key and minSdk ≥ 29 would remove them. They should be checked against the release artefact before being reported to a developer.
 4. **Native buffer overflow only partly visible.** `divajni.c` copies user input into a 20-byte stack buffer with `strcpy` (*Input Validation 3*). MobSF reports only the missing stack canary. It also shows that FORTIFY replaced the call with `__strcpy_chk`, which, when the compiler knows the buffer size, aborts on overflow instead of letting it be exploited. Whether the overflow is still exploitable can only be confirmed dynamically, for example on an emulator with a long input, or under a debugger.
 
@@ -287,7 +285,7 @@ docker pull opensecurity/mobile-security-framework-mobsf:latest
 * **Static analysis only.** MobSF examined the code and configuration without running the app. It cannot prove exploitability, detect runtime-only behaviour (dynamically loaded code, server-side logic, values decrypted at runtime) or see compiler and OS mitigations in action. See Section 10.6 for concrete examples of a false positive (`pkey: notespin`) and false negatives (`vendorsecretkey`, `123secretapikey123`, native key `olsdfgad;lh`, plaintext SharedPreferences).
 * **Severity needs context.** MobSF's severities are generic. *Debug certificate* is “High” but expected for a lab debug build, while *logging of a credit card* is only “Info”. Analyst judgement (Section 10) is needed to rank by real exposure and impact.
 * **Decompilation fidelity.** The line numbers MobSF reports refer to JADX-decompiled code, not to the original source files. Each one was checked against the original DIVA source before being cited.
-* **Tool and environment dependencies.** The first scan silently produced no code findings because JADX was missing, although the report still rendered. This shows that the analyst must check the scan log (Figure 12) before trusting an empty section.
+* **Tool and environment dependencies.** The first scan silently produced no code findings because JADX was missing, although the report still rendered. This shows that the analyst must check the scan log (Figure 10) before trusting an empty section.
 * **Build differences.** The APK was built with the SDK command-line toolchain (Section 6.4), and the native libraries target API 21+ because of NDK r29. Neither changes the Java code or the manifest that MobSF analysed. An Android Studio (AGP 8) build of `Source/diva-android/` will produce an APK with AndroidX libraries instead of support library 23.1.0. That changes library code, not DIVA's own findings.
 * **Recommended validation (next phase):** run the APK on an Android emulator and confirm each finding dynamically, using MobSF Dynamic Analyzer, adb `content query`/`am start`/`logcat`, drozer, and Frida. Then retest after the remediation is in place.
 
@@ -314,22 +312,22 @@ Interpreting the results mattered as much as running the tool. Analyst review tu
 
 # Appendix A – Screenshots and Evidence
 
-![Figure 21. Application information section of the MobSF report.](../Screenshots/13_stage3_app_information.png)
+![Figure 19. Application information section of the MobSF report.](../Screenshots/13_stage3_app_information.png)
 
-![Figure 22. Decoded AndroidManifest.xml as shown by MobSF (evidence for Findings 1 and 4: provider at line 37, exported activities at lines 24–36, `allowBackup="true"` at line 8).](../Screenshots/22_stage4_manifest_xml_evidence.png)
+![Figure 20. Decoded AndroidManifest.xml as shown by MobSF (evidence for Findings 1 and 4: provider at line 37, exported activities at lines 24–36, `allowBackup="true"` at line 8).](../Screenshots/22_stage4_manifest_xml_evidence.png)
 
-![Figure 23. MobSF source view of `SQLInjectionActivity.java`: plaintext credentials and card numbers (lines 23–26) and string-concatenated `rawQuery` (line 36) – Finding 2.](../Screenshots/23_stage4_SQLInjectionActivity_source.png)
+![Figure 21. MobSF source view of `SQLInjectionActivity.java`: plaintext credentials and card numbers (lines 23–26) and string-concatenated `rawQuery` (line 36) – Finding 2.](../Screenshots/23_stage4_SQLInjectionActivity_source.png)
 
-![Figure 24. MobSF source view of `NotesProvider.java`: unrestricted query/insert/update/delete on private notes and SQL built from URI segments – Finding 1.](../Screenshots/24_stage4_NotesProvider_source.png)
+![Figure 22. MobSF source view of `NotesProvider.java`: unrestricted query/insert/update/delete on private notes and SQL built from URI segments – Finding 1.](../Screenshots/24_stage4_NotesProvider_source.png)
 
-![Figure 25. MobSF source view of `InsecureDataStorage4Activity.java`: credentials written to `/sdcard/.uinfo.txt` – Finding 3.](../Screenshots/25_stage4_InsecureDataStorage4_source.png)
+![Figure 23. MobSF source view of `InsecureDataStorage4Activity.java`: credentials written to `/sdcard/.uinfo.txt` – Finding 3.](../Screenshots/25_stage4_InsecureDataStorage4_source.png)
 
-![Figure 26. MobSF source view of `LogActivity.java`: credit card number written to logcat with `Log.e` – Finding 5.](../Screenshots/26_stage4_LogActivity_source.png)
+![Figure 24. MobSF source view of `LogActivity.java`: credit card number written to logcat with `Log.e` – Finding 5.](../Screenshots/26_stage4_LogActivity_source.png)
 
-![Figure 27. MobSF source view of `HardcodeActivity.java`: hardcoded key `vendorsecretkey`, which MobSF did not flag as a secret (false negative, Section 10.6).](../Screenshots/27_stage4_HardcodeActivity_source_false_negative.png)
+![Figure 25. MobSF source view of `HardcodeActivity.java`: hardcoded key `vendorsecretkey`, which MobSF did not flag as a secret (false negative, Section 10.6).](../Screenshots/27_stage4_HardcodeActivity_source_false_negative.png)
 
-![Figure 28. Android API usage detected by MobSF (IPC, local file I/O, native code, content provider, start activity).](../Screenshots/19_stage3_android_api.png)
+![Figure 26. Android API usage detected by MobSF (IPC, local file I/O, native code, content provider, start activity).](../Screenshots/19_stage3_android_api.png)
 
-![Figure 29. Components section of the MobSF report (activities and providers).](../Screenshots/21_stage3_components.png)
+![Figure 27. Components section of the MobSF report (activities and providers).](../Screenshots/21_stage3_components.png)
 
 **Additional evidence:** the APK, MobSF's own 25-page PDF export, the JSON report, build logs and full-resolution screenshots are kept by the student and can be provided on request or shown during the demonstration.
