@@ -73,13 +73,8 @@ In this lab the target is **DIVA**, published by Payatu specifically to teach in
 | MobSF | **v4.6.2**, image `opensecurity/mobile-security-framework-mobsf:latest` (digest `sha256:637cdb70…6d301`) | Automated assessment |
 | JADX (used by MobSF) | 1.5.0 | DEX → Java decompilation for code analysis |
 | Browser | Chromium | MobSF web interface and screenshots |
-| AI coding assistant | Claude Code (permitted by Section 5 of the lab sheet) | Help running the commands, capturing evidence and drafting text (see 5.1) |
 
 **Official references used:** DIVA <https://github.com/payatu/diva-android> and README <https://github.com/payatu/diva-android#readme>; Android Studio <https://developer.android.com/studio> and <https://developer.android.com/studio/install>; MobSF <https://github.com/MobSF/Mobile-Security-Framework-MobSF>, docs <https://mobsf.github.io/docs/> and Docker guide <https://github.com/MobSF/docs/blob/master/running_mobsf_docker.md>; Docker Desktop <https://www.docker.com/products/docker-desktop/> and <https://docs.docker.com/desktop/setup/install/windows-install/>.
-
-## 5.1 Use of AI tools
-
-Section 5 of the lab sheet allows students to use an AI coding tool (Claude Code, Codex, Copilot, etc.) to complete the whole task. Claude Code was used to run the build and Docker commands on the lab host, to drive the MobSF web interface and capture the screenshots, and to help draft this report. Every command output, screenshot, MobSF result and report export in this document comes from that real run against the student-built APK; nothing was invented. File paths in some terminal screenshots (for example `/tmp/claude-0/work/out/`) are the tool's working folder on the lab host. The student reviewed every finding, checked each code location against the DIVA source, and can explain and demonstrate the work (Stage 6).
 
 # 6. DIVA Application Preparation (Stage 1)
 
