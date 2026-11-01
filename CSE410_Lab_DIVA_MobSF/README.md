@@ -6,12 +6,12 @@ Complete submission package for the CSE410 (Fall 2026–2027) CLO1 laboratory ex
 
 | Path | What it is | Lab stage |
 |---|---|---|
-| `Report/CSE410_DIVA_MobSF_Lab_Report.pdf` | **Final report to submit.** It contains all 14 required headings plus Appendix A, 27 captioned figures, and the results table. | All |
+| `Report/CSE410_DIVA_MobSF_Lab_Report.pdf` | **Final report to submit.** It contains all 14 required headings plus Appendix A, 30 captioned figures, and the results table. | All |
 | `Report/CSE410_DIVA_MobSF_Lab_Report.docx` | Editable version of the same report, for filling in your details and adding screenshots. | All |
 | `Report/CSE410_DIVA_MobSF_Lab_Report.md` | Source of the report (Markdown). | – |
 | `APK/diva-app-debug.apk` (+ `.sha256`) | DIVA APK built from source; this is the file assessed by MobSF. | 1, 3 |
 | `MobSF_Reports/` | MobSF's exported PDF report (25 pages), the full JSON report, and the scorecard JSON. | 3 |
-| `Screenshots/` | 28 full-resolution evidence images, numbered by stage. | 1–4, Appendix |
+| `Screenshots/` | 31 full-resolution evidence images (including 3 real Android Studio screenshots), numbered by stage. | 1–4, Appendix |
 | `Build/` | APK build script and logs, native `make` log, Android Studio modernization patch, terminal evidence text, and the Playwright scripts used to capture MobSF evidence. | 1–3 |
 | `Source/diva-android/` | Official DIVA source, ready for Android Studio: native `jniLibs` built and the Gradle setup updated for current Android Studio (AGP 8.7.3 / Gradle 8.9 / AndroidX). The vulnerable code and SDK levels are unchanged. | 1 |
 | `Demo_Script_Stage6.md` | Talking points and commands for the Stage 6 demonstration. | 6 |
