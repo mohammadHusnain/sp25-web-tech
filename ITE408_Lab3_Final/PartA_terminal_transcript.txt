@@ -1,0 +1,279 @@
+
+===== 1.1 Prompt changed to show student ID and privileges escalated to root =====
+Sat Nov 07 03:31 PM [1091080] root:~# echo "PS1=\"\\d \\@ [1091080]\""
+PS1="\d \@ [1091080]"
+Sat Nov 07 03:31 PM [1091080] root:~# whoami
+root
+Sat Nov 07 03:31 PM [1091080] root:~# id
+uid=0(root) gid=0(root) groups=0(root)
+
+===== 1.2 Add the DEVELOPERS group =====
+Sat Nov 07 03:31 PM [1091080] root:~# groupadd DEVELOPERS
+Sat Nov 07 03:31 PM [1091080] root:~# tail -n 2 /etc/group
+claude:x:30001:
+DEVELOPERS:x:30002:
+Sat Nov 07 03:31 PM [1091080] root:~# getent group DEVELOPERS
+DEVELOPERS:x:30002:
+
+===== 2.1 Add user sam (password samPass) and place him in DEVELOPERS =====
+Sat Nov 07 03:31 PM [1091080] root:~# adduser --gecos 'Sam,,,' --disabled-password sam
+info: Adding user `sam' ...
+info: Selecting UID/GID from range 1000 to 59999 ...
+info: Adding new group `sam' (1001) ...
+info: Adding new user `sam' (1001) with group `sam (1001)' ...
+info: Creating home directory `/home/sam' ...
+info: Copying files from `/etc/skel' ...
+info: Adding new user `sam' to supplemental / extra groups `users' ...
+info: Adding user `sam' to group `users' ...
+Sat Nov 07 03:31 PM [1091080] root:~# echo 'sam:samPass' | chpasswd && echo 'passwd: password updated successfully'
+passwd: password updated successfully
+Sat Nov 07 03:31 PM [1091080] root:~# usermod -aG DEVELOPERS sam
+Sat Nov 07 03:31 PM [1091080] root:~# id sam
+uid=1001(sam) gid=1001(sam) groups=1001(sam),100(users),30002(DEVELOPERS)
+
+===== 2.2 Add user danny (password dannyPass) and place him in DEVELOPERS =====
+Sat Nov 07 03:31 PM [1091080] root:~# adduser --gecos 'Danny,,,' --disabled-password danny
+info: Adding user `danny' ...
+info: Selecting UID/GID from range 1000 to 59999 ...
+info: Adding new group `danny' (1002) ...
+info: Adding new user `danny' (1002) with group `danny (1002)' ...
+info: Creating home directory `/home/danny' ...
+info: Copying files from `/etc/skel' ...
+info: Adding new user `danny' to supplemental / extra groups `users' ...
+info: Adding user `danny' to group `users' ...
+Sat Nov 07 03:31 PM [1091080] root:~# echo 'danny:dannyPass' | chpasswd && echo 'passwd: password updated successfully'
+passwd: password updated successfully
+Sat Nov 07 03:31 PM [1091080] root:~# usermod -aG DEVELOPERS danny
+Sat Nov 07 03:31 PM [1091080] root:~# id danny
+uid=1002(danny) gid=1002(danny) groups=1002(danny),100(users),30002(DEVELOPERS)
+
+===== 2.3 Verify the new users in /etc/passwd and /etc/group =====
+Sat Nov 07 03:31 PM [1091080] root:~# tail -n 3 /etc/passwd
+claude:x:999:30001::/home/claude:/bin/bash
+sam:x:1001:1001:Sam,,,:/home/sam:/bin/bash
+danny:x:1002:1002:Danny,,,:/home/danny:/bin/bash
+Sat Nov 07 03:31 PM [1091080] root:~# grep DEVELOPERS /etc/group
+DEVELOPERS:x:30002:sam,danny
+
+===== 2.4 Verify the password hashes in /etc/shadow =====
+Sat Nov 07 03:31 PM [1091080] root:~# grep -E '^(sam|danny):' /etc/shadow
+sam:$y$j9T$K0GEV8L9ri4jzIuSd6IFP0$srtHi2JJ1LECfyZKeW.cwRr1PgQzi01pJyGdVSDnzS6:20764:0:99999:7:::
+danny:$y$j9T$bMbUnKEKekTta5jGvn3Kv0$jbRnBKzo6o6ioB3VJS3eehPOtPx6VLaFnXp8jXLd9Q.:20764:0:99999:7:::
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /etc/shadow /etc/passwd
+-rw-r--r-- 1 root root   3425 Nov  7 15:31 /etc/passwd
+-rw-r----- 1 root shadow 1575 Nov  7 15:31 /etc/shadow
+
+===== 3.0 Default home-directory mode on Ubuntu 24.04 (HOME_MODE) and lab baseline =====
+Sat Nov 07 03:31 PM [1091080] root:~# grep -E '^HOME_MODE' /etc/login.defs
+HOME_MODE	0750
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /home/sam /home/danny
+drwxr-x--- 2 danny danny 4096 Nov  7 15:31 /home/danny
+drwxr-x--- 2 sam   sam   4096 Nov  7 15:31 /home/sam
+Sat Nov 07 03:31 PM [1091080] root:~# chmod 755 /home/sam /home/danny
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /home/sam /home/danny
+drwxr-xr-x 2 danny danny 4096 Nov  7 15:31 /home/danny
+drwxr-xr-x 2 sam   sam   4096 Nov  7 15:31 /home/sam
+
+===== 3.1 Switch to sam and explore the environment =====
+Sat Nov 07 03:31 PM [1091080] sam:~$ pwd
+/home/sam
+Sat Nov 07 03:31 PM [1091080] sam:~$ cd /home
+Sat Nov 07 03:31 PM [1091080] sam:/home$ ls -l
+total 20
+drwxr-xr-x 7 claude claude 4096 Oct 28 22:46 claude
+drwxr-xr-x 2 danny  danny  4096 Nov  7 15:31 danny
+drwxr-xr-x 2 sam    sam    4096 Nov  7 15:31 sam
+drwxr-x--- 2 ubuntu ubuntu 4096 Sep 30 19:12 ubuntu
+drwxr-xr-x 3 root   root   4096 Oct 28 22:46 user
+
+===== 3.2 sam can enter danny's directory but cannot write in it =====
+Sat Nov 07 03:31 PM [1091080] sam:/home$ cd danny
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ pwd
+/home/danny
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ touch new.txt
+touch: cannot touch 'new.txt': Permission denied
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ cd ..
+
+===== 3.3 As root, remove execute for others on danny's directory (chmod o-x) =====
+Sat Nov 07 03:31 PM [1091080] root:~# cd /home
+Sat Nov 07 03:31 PM [1091080] root:/home# chmod o-x danny
+Sat Nov 07 03:31 PM [1091080] root:/home# ls -l
+total 20
+drwxr-xr-x 7 claude claude 4096 Oct 28 22:46 claude
+drwxr-xr-- 2 danny  danny  4096 Nov  7 15:31 danny
+drwxr-xr-x 2 sam    sam    4096 Nov  7 15:31 sam
+drwxr-x--- 2 ubuntu ubuntu 4096 Sep 30 19:12 ubuntu
+drwxr-xr-x 3 root   root   4096 Oct 28 22:46 user
+
+===== 3.4 Verify sam can no longer access danny's directory =====
+Sat Nov 07 03:31 PM [1091080] sam:/home$ cd danny
+-bash: cd: danny: Permission denied
+Sat Nov 07 03:31 PM [1091080] sam:/home$ ls -ld danny
+drwxr-xr-- 2 danny danny 4096 Nov  7 15:31 danny
+
+===== 4.1 Switch to danny and view current permissions =====
+Sat Nov 07 03:31 PM [1091080] danny:~$ pwd
+/home/danny
+Sat Nov 07 03:31 PM [1091080] danny:~$ cd /home
+Sat Nov 07 03:31 PM [1091080] danny:/home$ ls -l
+total 20
+drwxr-xr-x 7 claude claude 4096 Oct 28 22:46 claude
+drwxr-xr-- 2 danny  danny  4096 Nov  7 15:31 danny
+drwxr-xr-x 2 sam    sam    4096 Nov  7 15:31 sam
+drwxr-x--- 2 ubuntu ubuntu 4096 Sep 30 19:12 ubuntu
+drwxr-xr-x 3 root   root   4096 Oct 28 22:46 user
+
+===== 4.2 Absolute mode: chmod 705 danny (owner rwx, group ---, others r-x) =====
+Sat Nov 07 03:31 PM [1091080] danny:/home$ chmod 705 danny
+Sat Nov 07 03:31 PM [1091080] danny:/home$ ls -ld danny
+drwx---r-x 2 danny danny 4096 Nov  7 15:31 danny
+Sat Nov 07 03:31 PM [1091080] danny:/home$ stat -c '%a %A %n' danny
+705 drwx---r-x danny
+
+===== 4.3 Create test.txt in danny's directory =====
+Sat Nov 07 03:31 PM [1091080] danny:~$ touch test.txt
+Sat Nov 07 03:31 PM [1091080] danny:~$ ls -l
+total 0
+-rw-rw-r-- 1 danny danny 0 Nov  7 15:31 test.txt
+
+===== 4.4 As sam: read access to danny's directory and test.txt =====
+Sat Nov 07 03:31 PM [1091080] sam:~$ cd /home
+Sat Nov 07 03:31 PM [1091080] sam:/home$ ls -l
+total 20
+drwxr-xr-x 7 claude claude 4096 Oct 28 22:46 claude
+drwx---r-x 2 danny  danny  4096 Nov  7 15:31 danny
+drwxr-xr-x 2 sam    sam    4096 Nov  7 15:31 sam
+drwxr-x--- 2 ubuntu ubuntu 4096 Sep 30 19:12 ubuntu
+drwxr-xr-x 3 root   root   4096 Oct 28 22:46 user
+Sat Nov 07 03:31 PM [1091080] sam:/home$ cd danny
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ ls -l
+total 0
+-rw-rw-r-- 1 danny danny 0 Nov  7 15:31 test.txt
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ cat test.txt && echo '(file readable - empty)'
+(file readable - empty)
+
+===== 4.5 As sam: attempt to create a file in danny's directory =====
+Sat Nov 07 03:31 PM [1091080] sam:/home/danny$ touch Sam.txt
+touch: cannot touch 'Sam.txt': Permission denied
+
+===== 5.1 SUID: create test directory, write and compile the C program (owner danny) =====
+Sat Nov 07 03:31 PM [1091080] root:~# cd /opt/suidlab
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# echo 'TOP-SECRET: only danny can read this' > danny_secret.txt
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# chown danny:danny danny_secret.txt && chmod 600 danny_secret.txt
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# cat whoami_suid.c
+#include <stdio.h>
+#include <unistd.h>
+#include <pwd.h>
+static const char *nm(uid_t u){ struct passwd *p = getpwuid(u); return p ? p->pw_name : "?"; }
+int main(void){
+    uid_t r = getuid(), e = geteuid();
+    printf("Real UID      : %d (%s)\n", r, nm(r));
+    printf("Effective UID : %d (%s)\n", e, nm(e));
+    FILE *f = fopen("/opt/suidlab/danny_secret.txt", "r");
+    if (f) { char b[128]; if (fgets(b, sizeof b, f)) printf("Secret file   : %s", b); fclose(f); }
+    else    printf("Secret file   : Permission denied\n");
+    return 0;
+}
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# gcc whoami_suid.c -o whoami_suid
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# chown danny:danny whoami_suid && chmod 755 whoami_suid
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# ls -l
+total 24
+-rw------- 1 danny danny    37 Nov  7 15:31 danny_secret.txt
+-rwxr-xr-x 1 danny danny 16344 Nov  7 15:31 whoami_suid
+-rw-r--r-- 1 root  root    541 Nov  7 15:31 whoami_suid.c
+
+===== 5.2 SUID BEFORE: sam runs the program (runs as sam) =====
+Sat Nov 07 03:31 PM [1091080] sam:/opt/suidlab$ ls -l whoami_suid
+-rwxr-xr-x 1 danny danny 16344 Nov  7 15:31 whoami_suid
+Sat Nov 07 03:31 PM [1091080] sam:/opt/suidlab$ ./whoami_suid
+Real UID      : 1001 (sam)
+Effective UID : 1001 (sam)
+Secret file   : Permission denied
+
+===== 5.3 Apply SUID with chmod u+s =====
+Sat Nov 07 03:31 PM [1091080] root:~# cd /opt/suidlab
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# chmod u+s whoami_suid
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# ls -l whoami_suid
+-rwsr-xr-x 1 danny danny 16344 Nov  7 15:31 whoami_suid
+Sat Nov 07 03:31 PM [1091080] root:/opt/suidlab# stat -c '%a %A %n' whoami_suid
+4755 -rwsr-xr-x whoami_suid
+
+===== 5.4 SUID AFTER: sam runs the program (effective UID = danny) =====
+Sat Nov 07 03:31 PM [1091080] sam:/opt/suidlab$ ./whoami_suid
+Real UID      : 1001 (sam)
+Effective UID : 1002 (danny)
+Secret file   : TOP-SECRET: only danny can read this
+Sat Nov 07 03:31 PM [1091080] sam:/opt/suidlab$ cat danny_secret.txt
+cat: danny_secret.txt: Permission denied
+
+===== 5.5 Real-world SUID binaries and how auditors find them =====
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /usr/bin/passwd
+-rwsr-xr-x 1 root root 64152 May 30  2024 /usr/bin/passwd
+Sat Nov 07 03:31 PM [1091080] root:~# find /usr/bin -perm -4000 -type f 2>/dev/null | head
+/usr/bin/sudo
+/usr/bin/chfn
+/usr/bin/chsh
+/usr/bin/gpasswd
+/usr/bin/mount
+/usr/bin/newgrp
+/usr/bin/passwd
+/usr/bin/su
+/usr/bin/umount
+
+===== 5.6 SGID BEFORE: shared directory owned by DEVELOPERS, no SGID =====
+Sat Nov 07 03:31 PM [1091080] root:~# mkdir /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# chgrp DEVELOPERS /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# chmod 2770 /srv/devshare && chmod g-s /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /srv/devshare
+drwxrwx--- 2 root DEVELOPERS 4096 Nov  7 15:31 /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# su sam -c 'touch /srv/devshare/before_sgid.txt'
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /srv/devshare
+total 0
+-rw-rw-r-- 1 sam sam 0 Nov  7 15:31 before_sgid.txt
+
+===== 5.7 SGID AFTER: chmod g+s - new files inherit the DEVELOPERS group =====
+Sat Nov 07 03:31 PM [1091080] root:~# chmod g+s /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /srv/devshare
+drwxrws--- 2 root DEVELOPERS 4096 Nov  7 15:31 /srv/devshare
+Sat Nov 07 03:31 PM [1091080] root:~# su sam -c 'touch /srv/devshare/after_sgid_sam.txt'
+Sat Nov 07 03:31 PM [1091080] root:~# su danny -c 'touch /srv/devshare/after_sgid_danny.txt; mkdir /srv/devshare/subdir'
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /srv/devshare
+total 4
+-rw-rw-r-- 1 danny DEVELOPERS    0 Nov  7 15:31 after_sgid_danny.txt
+-rw-rw-r-- 1 sam   DEVELOPERS    0 Nov  7 15:31 after_sgid_sam.txt
+-rw-rw-r-- 1 sam   sam           0 Nov  7 15:31 before_sgid.txt
+drwxrwsr-x 2 danny DEVELOPERS 4096 Nov  7 15:31 subdir
+
+===== 5.8 Sticky BEFORE: world-writable /tmp/teststicky - danny deletes sam's file =====
+Sat Nov 07 03:31 PM [1091080] root:~# mkdir /tmp/teststicky && chmod 777 /tmp/teststicky
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /tmp/teststicky
+drwxrwxrwx 2 root root 4096 Nov  7 15:31 /tmp/teststicky
+Sat Nov 07 03:31 PM [1091080] root:~# su sam -c 'echo sam-data > /tmp/teststicky/sam.txt'
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /tmp/teststicky
+total 4
+-rw-rw-r-- 1 sam sam 9 Nov  7 15:31 sam.txt
+Sat Nov 07 03:31 PM [1091080] root:~# su danny -c 'rm -f /tmp/teststicky/sam.txt' && echo 'danny deleted sam.txt'
+danny deleted sam.txt
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /tmp/teststicky
+total 0
+
+===== 5.9 Sticky AFTER: chmod +t - only owner or root can delete =====
+Sat Nov 07 03:31 PM [1091080] root:~# chmod +t /tmp/teststicky
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /tmp/teststicky
+drwxrwxrwt 2 root root 4096 Nov  7 15:31 /tmp/teststicky
+Sat Nov 07 03:31 PM [1091080] root:~# su sam -c 'echo sam-data > /tmp/teststicky/sam.txt'
+Sat Nov 07 03:31 PM [1091080] root:~# su danny -c 'echo danny-data > /tmp/teststicky/danny.txt'
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /tmp/teststicky
+total 8
+-rw-rw-r-- 1 danny danny 11 Nov  7 15:31 danny.txt
+-rw-rw-r-- 1 sam   sam    9 Nov  7 15:31 sam.txt
+Sat Nov 07 03:31 PM [1091080] root:~# su danny -c 'rm -f /tmp/teststicky/sam.txt'
+rm: cannot remove '/tmp/teststicky/sam.txt': Operation not permitted
+Sat Nov 07 03:31 PM [1091080] root:~# su sam -c 'rm -f /tmp/teststicky/sam.txt' && echo 'sam deleted his own file'
+sam deleted his own file
+Sat Nov 07 03:31 PM [1091080] root:~# rm -f /tmp/teststicky/danny.txt && echo 'root deleted danny.txt'
+root deleted danny.txt
+Sat Nov 07 03:31 PM [1091080] root:~# ls -l /tmp/teststicky
+total 0
+Sat Nov 07 03:31 PM [1091080] root:~# ls -ld /tmp
+drwxrwxrwt 9 root root 4096 Nov  7 15:31 /tmp
