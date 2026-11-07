@@ -7,8 +7,8 @@ const PROMPT = /^(\w{3} \w{3} \d{2} \d{2}:\d{2} [AP]M \[\d+\]) ([\w-]+):(\S*)([#
   const ctx = await b.newContext({ viewport: { width: 1280, height: 720 }, recordVideo: { dir: out, size: { width: 1280, height: 720 } } });
   const p = await ctx.newPage();
   await p.setContent(`<body style="margin:0;background:#300a24;font-family:'DejaVu Sans Mono',monospace;color:#eee;overflow:hidden">
-<div id="ban" style="background:#2d2d2d;color:#fff;font:600 20px 'DejaVu Sans',sans-serif;padding:12px 22px;height:26px"></div>
-<pre id="t" style="margin:0;padding:14px 22px;font-size:15px;line-height:19px;white-space:pre-wrap;word-break:break-all;height:640px;overflow:hidden"></pre>
+<div id="ban" style="background:#2d2d2d;color:#fff;font:600 20px 'DejaVu Sans',sans-serif;padding:12px 22px;height:26px;display:none"></div>
+<pre id="t" style="margin:0;padding:14px 22px;font-size:15px;line-height:19px;white-space:pre-wrap;word-break:break-all;height:690px;overflow:hidden"></pre>
 <style>.y{color:#fce94f}.u{color:#8ae234;font-weight:bold}.p{color:#729fcf;font-weight:bold}.c{color:#fff;font-weight:bold}.r{color:#ff6b6b}</style></body>`);
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   for (const sc of scenes) {
