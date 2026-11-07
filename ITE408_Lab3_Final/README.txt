@@ -5,6 +5,7 @@ screenshots_PartA/               25 Part A terminal screenshots (prompt shows [1
 screenshots_PartB/               Part B screenshots, Figures 26-41 (real Keycloak 26.8.2 run)
 PartA_terminal_transcript.txt    Full text output of every Part A command
 Video_Script_PartA.md            Script for the 2-3 minute video
+ITE408_Lab3_Demo_Video.mp4       94-second silent demo of Part A commands and Part B Steps 1-9 (add your own voiceover for the graded video)
 scripts/                         Part A script, SUID C program, and the Part B setup/automation scripts
 
 STILL TO DO BEFORE SUBMITTING
