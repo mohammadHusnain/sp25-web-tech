@@ -5,7 +5,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const { BASE, OUT } = require('./kc_lib');
-const USER = 'anas.syed', PASS = '1091080', REALM = 'MyApp080', CLIENT = 'my-client080';
+const USER = 'syed', PASS = '1091080', REALM = 'MyApp080', CLIENT = 'my-client080';
 const shotp = async (page, name, opts = {}) => { await page.waitForTimeout(900); await page.screenshot({ path: `${OUT}/${name}.png`, ...opts }); console.log('shot', name); };
 
 const DEMO = `<!doctype html><html><head><meta charset="utf-8"><title>Keycloak demo app (local copy)</title>
@@ -50,7 +50,7 @@ main();
 
   // ---------- Step 5: test the new user on the realm's account page ----------
   if (!process.env.STEP7_ONLY) {
-    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1.5 });
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1.5, ...(process.env.REC ? { recordVideo: { dir: process.env.REC, size: { width: 1280, height: 800 } } } : {}) });
     const page = await ctx.newPage();
     await page.goto(`${BASE}/realms/${REALM}/account`);
     await page.waitForSelector('#username');
@@ -74,7 +74,7 @@ main();
 
   // ---------- Step 7: public client through the demo app ----------
   {
-    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1.5, ignoreHTTPSErrors: true });
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1.5, ignoreHTTPSErrors: true, ...(process.env.REC ? { recordVideo: { dir: process.env.REC, size: { width: 1280, height: 800 } } } : {}) });
     const page = await ctx.newPage();
     let tokenReq = null;
     page.on('response', async (res) => {

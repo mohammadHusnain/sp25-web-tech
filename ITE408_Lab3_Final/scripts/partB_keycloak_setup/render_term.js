@@ -19,7 +19,8 @@ function line(l) {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 980, height: 200 }, deviceScaleFactor: 2 });
   for (const j of jobs) {
-    const body = j.text.split('\n').map(line).join('\n');
+    let body = j.text.split('\n').map(line).join('\n');
+    if (j.blur) body = body.split(esc(j.blur)).join('<span style="filter:blur(5px)">' + esc(j.blur) + '</span>');
     await page.setContent(`<html><body style="margin:0;background:transparent">
 <div id="w" style="width:980px;border-radius:9px;overflow:hidden;background:#300a24;font-family:'DejaVu Sans Mono',monospace">
 <div style="background:#2d2d2d;height:31px;position:relative;color:#ddd;font:14px 'DejaVu Sans',sans-serif;text-align:center;line-height:31px">

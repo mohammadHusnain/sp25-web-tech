@@ -115,6 +115,13 @@ TXT = {
  249: "**My own reflection:** the clearest lesson was the difference between public and confidential clients: who can keep a secret decides which login flow is safe. I also learned that small details matter. Keycloak rejected a space in the user name, switched off Direct access grants by default, and refused a one-time code that was used twice.",
  251: "Part A showed access control at the operating-system level: users, groups, hashed passwords, symbolic and octal permissions, and the special bits SUID, SGID and sticky. Part B moved access control to the application level with Keycloak: realms, users, an admin protected by OTP, public and confidential clients, and signed JWT tokens. Together they show \"defence in depth\": least privilege in the operating system and strong central login in the application.",
 }
+TXT.update({
+ 181: "OTP adds a second step to the login: **something you have** (the phone) as well as **something you know** (the password). Keycloak uses **TOTP (RFC 6238)**: the QR code shares a secret key, and both sides use that key and the current 30-second time window to work out the same 6-digit code. If someone steals the admin password, they still cannot log in. On my lab machine I used the key shown under \"Unable to scan?\" and a small script to work out the 6-digit code (the same TOTP method as an authenticator app). Keycloak **refused** the same code when I used it a second time inside the same 30 seconds, which stops codes from being reused.",
+ 197: "The handout's screenshot note says \"first name\", but the instructions say \"family name\". I followed the instructions: my family name is Syed, so the user name is `syed`. I set the password to my student ID and turned **Temporary** off, so Keycloak does not force a password change. At the first login, Keycloak asked me to complete my profile (email, first name and last name) and then opened the account page. This shows that the user can log in to the new realm.",
+ 211: "This uses the **Authorization Code flow**: the browser goes to Keycloak, the user logs in there, and Keycloak sends back a short-lived code. The app swaps the code at `/token` for an `access_token`, an `id_token` and a `refresh_token`. **Note:** my lab machine could not reach https://www.keycloak.org/app/, so the browser opened a small local copy of the demo page at the same address. The Keycloak login page, the redirect and the token request and response are real. Figure 37 shows the captured token request.",
+ 228: "**Reading the JWT:** a JWT has three parts joined by dots: `header.payload.signature` (each part is Base64URL text). The **header** shows `alg: RS256` and `kid` (which signing key was used). The **payload** holds the claims: `iss` (the realm address), `exp` and `iat` (expiry time and issue time, 5 minutes apart by default), `azp` and `client_id` (which client asked), `realm_access.roles` and `scope`. The **signature** is checked with the realm's public key from `/realms/MyApp080/protocol/openid-connect/certs`. Anyone can **read** a JWT, so secrets must never be put inside it; the signature protects it from changes. The token in Figure 41 was decoded locally because jwt.io could not be reached.",
+ 249: "**My own reflection:** the clearest lesson was the difference between public and confidential clients: who can keep a secret decides which login flow is safe. I also learned that small details matter. Keycloak switches off Direct access grants by default, and it refused a one-time code that was used twice.",
+})
 for i, t in TXT.items():
     set_runs(P(i), t)
 
@@ -131,11 +138,11 @@ set_box_lines(T(165), ['sudo su', 'docker run -d --name keycloak -p 8080:8080 \\
 set_box_lines(T(171), ['Browser → http://localhost:8080/  →  username: Anas   password: 1091080'])
 set_box_lines(T(179), ['Users → Anas → Details → Required user actions: Configure OTP → Save', "Sign out → sign in again → set up the authenticator (QR code, or the key under 'Unable to scan?') → enter the 6-digit code"])
 set_box_lines(T(189), ['Manage realms → Create realm → Realm name: MyApp080 → Create'])
-set_box_lines(T(195), ['MyApp080 → Users → Add user → Username: anas.syed → Create', 'Credentials → Set password: 1091080, Temporary: OFF → Save', 'Test: http://localhost:8080/realms/MyApp080/account'])
+set_box_lines(T(195), ['MyApp080 → Users → Add user → Username: syed → Create', 'Credentials → Set password: 1091080, Temporary: OFF → Save', 'Test: http://localhost:8080/realms/MyApp080/account'])
 set_box_lines(T(203), ['Clients → Create client → Client type: OpenID Connect → Client ID: my-client080', 'Client authentication: OFF · Standard flow: ON · Direct access grants: ON', 'Valid redirect URIs: https://www.keycloak.org/app/*   Web origins: https://www.keycloak.org → Save'])
-set_box_lines(T(209), ['https://www.keycloak.org/app/ → Realm: MyApp080, Client: my-client080 → Sign in', "Log in as anas.syed → read the /token request and response (Network tab, filter 'token')"])
+set_box_lines(T(209), ['https://www.keycloak.org/app/ → Realm: MyApp080, Client: my-client080 → Sign in', "Log in as syed → read the /token request and response (Network tab, filter 'token')"])
 set_box_lines(T(217), ['Clients → Create client → Client ID: my-Confidential-Client080', 'Client authentication: ON · Direct access grants: ON · Service accounts roles: ON → Save → Credentials tab → copy Client secret'])
-set_box_lines(T(225), ["curl -L -X POST 'http://localhost:8080/realms/MyApp080/protocol/openid-connect/token' \\", "  -H 'Content-Type: application/x-www-form-urlencoded' \\", "  --data-urlencode 'client_id=my-Confidential-Client080' \\", f"  --data-urlencode 'client_secret={SECRET}' \\", "  --data-urlencode 'grant_type=client_credentials'"])
+set_box_lines(T(225), ["curl -L -X POST 'http://localhost:8080/realms/MyApp080/protocol/openid-connect/token' \\", "  -H 'Content-Type: application/x-www-form-urlencoded' \\", "  --data-urlencode 'client_id=my-Confidential-Client080' \\", "  --data-urlencode 'client_secret=******** (hidden)' \\", "  --data-urlencode 'grant_type=client_credentials'"])
 set_box_lines(T(234), ['Google Cloud Console → APIs & Services → OAuth consent screen (External, add test user)', 'Credentials → Create OAuth client ID → Web application', '  Authorized redirect URI: http://localhost:8080/realms/MyApp080/broker/google/endpoint', 'Keycloak → MyApp080 → Identity providers → Google → paste Client ID + Client secret → Add', "Test: http://localhost:8080/realms/MyApp080/account → 'Sign in with Google'"])
 
 # ---------------------------------------------------------------- 3. tables with wording to simplify
@@ -201,7 +208,7 @@ for idx in (28, 252, 253):                # TOC entry + section 5
     body[idx].getparent().remove(body[idx])
 
 # ---------------------------------------------------------------- 8. replace every remaining placeholder
-REPL = [('[Your Full Name]', 'Anas Syed'), ('STUDENT-ID', '1091080'), ('[First_Name]', 'Anas'), ('[family_name]', 'anas.syed'),
+REPL = [('[Your Full Name]', 'Anas Syed'), ('STUDENT-ID', '1091080'), ('[First_Name]', 'Anas'), ('[family_name]', 'syed'),
         ('my-Confidential-ClientXYZ', 'my-Confidential-Client080'), ('my-clientXYZ', 'my-client080'), ('MyAppXYZ', 'MyApp080')]
 def fix_para(p):
     for r in p.runs:

@@ -3,14 +3,14 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const { BASE, OUT, totp, shot } = require('./kc_lib');
 const FIRST = 'Anas', SID = '1091080', XYZ = '080', REALM = `MyApp${XYZ}`;
-const FAMILY = 'anas.syed'; // username requested by the student (Keycloak stores usernames in lower case)
+const FAMILY = 'syed'; // username requested by the student (Keycloak stores usernames in lower case)
 const OTPSECRET = fs.readFileSync('/tmp/claude-0/lab3work/admin_otp_secret.txt', 'utf8').trim();
 
 const full = async (page, name) => { await page.waitForTimeout(900); await page.screenshot({ path: `${OUT}/${name}.png`, fullPage: true }); console.log('shot', name); };
 
 (async () => {
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1.5 });
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1.5, ...(process.env.REC ? { recordVideo: { dir: process.env.REC, size: { width: 1280, height: 900 } } } : {}) });
   const page = await ctx.newPage();
   global.__page = page;
 
